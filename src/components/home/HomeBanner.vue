@@ -13,7 +13,7 @@ const banners = [
 <template>
   <div class="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
     <!-- Banner Container -->
-    <div class="relative overflow-hidden rounded-[2rem] shadow-2xl aspect-[21/9] sm:aspect-[2.8/1] group">
+    <div class="relative overflow-hidden rounded-[2rem] aspect-[21/9] sm:aspect-[2.8/1] group">
       <img
         :src="banners[0].image"
         class="w-full h-full object-cover object-center transform transition-transform duration-700 group-hover:scale-105"
