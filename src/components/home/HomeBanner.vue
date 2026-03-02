@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
 const banners = [
   {
     id: 1,
@@ -10,8 +8,6 @@ const banners = [
   },
   // Add more placeholders if needed for carousel simulation
 ]
-
-const activeIndex = ref(1) // middle dot active in Fig
 </script>
 
 <template>
