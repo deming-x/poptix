@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 
 const isMobileMenuOpen = ref(false)
+const isLoggedIn = ref(false)
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -10,6 +11,10 @@ const navLinks = [
 
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
+
+const handleLogin = () => {
+  isLoggedIn.value = true
 }
 </script>
 
@@ -37,39 +42,61 @@ const toggleMobileMenu = () => {
         </div>
 
         <!-- Right Side Actions (Includes Search Bar) -->
-        <div class="flex items-center space-x-6 flex-1 justify-end">
+        <div class="flex items-center space-x-8 flex-1 justify-end">
           <!-- Search Bar (Desktop) -->
           <div class="hidden md:flex w-[480px]">
             <div class="relative w-full">
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                <svg class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                 </svg>
               </div>
               <input
                 type="text"
-                class="block w-full bg-[#f3f4f6] border-transparent rounded-full py-2.5 pl-11 pr-4 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8b3dff] focus:bg-white transition-all duration-200"
-                placeholder="搜索更多活动/演出/音乐会"
+                class="block w-full bg-[#f6f7f9] border-transparent rounded-full py-2.5 pl-11 pr-4 text-sm placeholder-gray-400/60 focus:outline-none focus:ring-2 focus:ring-[#8b3dff]/20 focus:bg-white transition-all duration-200"
+                placeholder="| 搜索更多活动/演出/音乐会"
               />
             </div>
           </div>
 
           <!-- Language/Currency Selector -->
-          <div class="hidden lg:flex items-center space-x-2 text-gray-700 cursor-pointer hover:text-gray-900 font-medium whitespace-nowrap">
-            <svg class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9h18" />
+          <div class="hidden lg:flex items-center space-x-2.5 text-gray-700 cursor-pointer hover:text-gray-900 font-medium whitespace-nowrap px-2">
+            <svg class="h-5 w-5 text-[#1a1a1a]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9h18" />
             </svg>
-            <span class="text-sm">EN</span>
-            <span class="text-gray-300">|</span>
-            <span class="text-sm">HKD</span>
+            <span class="text-[14px] font-bold">EN</span>
+            <span class="text-gray-200 text-[14px]">|</span>
+            <span class="text-[14px] font-bold">HKD</span>
             <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
             </svg>
           </div>
 
-          <!-- Sign In Button -->
+          <!-- Auth Actions -->
           <div class="hidden sm:block">
-            <button class="bg-[#8b3dff] hover:bg-[#7c3aed] text-white px-8 py-2.5 rounded-full text-sm font-semibold shadow-lg shadow-purple-200 transition-all duration-200 active:scale-95 whitespace-nowrap">
+            <!-- Logged In State -->
+            <div v-if="isLoggedIn" class="flex items-center space-x-3 cursor-pointer group px-1">
+              <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-transparent group-hover:border-[#8b3dff]/20 transition-all duration-200">
+                <img 
+                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop" 
+                  alt="Jay Chou"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <div class="flex items-center space-x-1">
+                <span class="text-[15px] font-bold text-[#1a1a1a]">Jay Chou</span>
+                <svg class="h-3.5 w-3.5 text-gray-400 group-hover:text-gray-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Logged Out State -->
+            <button 
+              v-else
+              @click="handleLogin"
+              class="bg-[#8b3dff] hover:bg-[#7c3aed] text-white px-8 py-2.5 rounded-full text-sm font-semibold shadow-lg shadow-purple-200 transition-all duration-200 active:scale-95 whitespace-nowrap"
+            >
               Sign In
             </button>
           </div>
@@ -118,7 +145,17 @@ const toggleMobileMenu = () => {
           </router-link>
         </div>
         <div class="pt-4 border-t border-gray-100">
-          <button class="w-full bg-[#8b3dff] text-white px-4 py-3 rounded-full text-base font-semibold shadow-lg">
+          <div v-if="isLoggedIn" class="flex items-center space-x-3 px-3">
+             <div class="w-10 h-10 rounded-full overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop" 
+                  alt="Jay Chou"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <span class="text-[15px] font-bold text-[#1a1a1a]">Jay Chou</span>
+          </div>
+          <button v-else @click="handleLogin" class="w-full bg-[#8b3dff] text-white px-4 py-3 rounded-full text-base font-semibold shadow-lg">
             Sign In
           </button>
         </div>
