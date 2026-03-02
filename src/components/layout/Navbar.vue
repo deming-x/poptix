@@ -36,24 +36,24 @@ const toggleMobileMenu = () => {
           </router-link>
         </div>
 
-        <!-- Search Bar (Desktop) -->
-        <div class="hidden md:flex flex-1 max-w-2xl mx-8">
-          <div class="relative w-full">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-              </svg>
+        <!-- Right Side Actions (Includes Search Bar) -->
+        <div class="flex items-center space-x-6 flex-1 justify-end">
+          <!-- Search Bar (Desktop) -->
+          <div class="hidden md:flex w-[480px]">
+            <div class="relative w-full">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                class="block w-full bg-[#f3f4f6] border-transparent rounded-full py-2.5 pl-11 pr-4 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8b3dff] focus:bg-white transition-all duration-200"
+                placeholder="搜索更多活动/演出/音乐会"
+              />
             </div>
-            <input
-              type="text"
-              class="block w-full bg-[#f3f4f6] border-transparent rounded-full py-2.5 pl-11 pr-4 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8b3dff] focus:bg-white transition-all duration-200"
-              placeholder="搜索更多活动/演出/音乐会"
-            />
           </div>
-        </div>
 
-        <!-- Right Side Actions -->
-        <div class="flex items-center space-x-6">
           <!-- Language/Currency Selector -->
           <div class="hidden lg:flex items-center space-x-2 text-gray-700 cursor-pointer hover:text-gray-900 font-medium whitespace-nowrap">
             <svg class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -69,7 +69,7 @@ const toggleMobileMenu = () => {
 
           <!-- Sign In Button -->
           <div class="hidden sm:block">
-            <button class="bg-[#8b3dff] hover:bg-[#7c3aed] text-white px-8 py-2.5 rounded-full text-sm font-semibold shadow-lg shadow-purple-200 transition-all duration-200 active:scale-95">
+            <button class="bg-[#8b3dff] hover:bg-[#7c3aed] text-white px-8 py-2.5 rounded-full text-sm font-semibold shadow-lg shadow-purple-200 transition-all duration-200 active:scale-95 whitespace-nowrap">
               Sign In
             </button>
           </div>

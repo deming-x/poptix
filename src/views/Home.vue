@@ -1,6 +1,38 @@
 <script setup lang="ts">
 import HomeBanner from '../components/home/HomeBanner.vue'
 import EventSection from '../components/home/EventSection.vue'
+import TourSection from '../components/home/TourSection.vue'
+
+const tourEvents = [
+  {
+    id: 1,
+    image: '/src/assets/tour-1.png',
+    title: 'The Fact Music Awards 2025 Adcc',
+    dateRange: '08/02/2026-09/02/2026',
+    eventCount: '6 Events'
+  },
+  {
+    id: 2,
+    image: '/src/assets/tour-2.png',
+    title: 'The Fact Music Awards 2025 Adcc',
+    dateRange: '08/02/2026-09/02/2026',
+    eventCount: '6 Events'
+  },
+  {
+    id: 3,
+    image: '/src/assets/tour-3.png',
+    title: 'The Fact Music Awards 2025 Adcc',
+    dateRange: '08/02/2026-09/02/2026',
+    eventCount: '6 Events'
+  },
+  {
+    id: 4,
+    image: '/src/assets/tour-4.png',
+    title: 'The Fact Music Awards 2025 Adcc',
+    dateRange: '08/02/2026-09/02/2026',
+    eventCount: '6 Events'
+  }
+]
 
 const recentlyViewedEvents = [
   {
@@ -46,6 +78,12 @@ const recentlyViewedEvents = [
   <main class="min-h-screen bg-white">
     <!-- Hero Banner -->
     <HomeBanner />
+    
+    <!-- Tour Section -->
+    <TourSection 
+      title="巡演 (Tour)" 
+      :items="tourEvents" 
+    />
     
     <!-- Recently Viewed Section -->
     <EventSection 

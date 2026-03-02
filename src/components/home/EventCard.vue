@@ -12,7 +12,7 @@ defineProps<{
 <template>
   <div class="bg-white rounded-[1.5rem] overflow-hidden group cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
     <!-- Image Container -->
-    <div class="relative aspect-square overflow-hidden rounded-[1.5rem]">
+    <div class="relative aspect-[3/4] overflow-hidden rounded-[1.5rem]">
       <img 
         :src="image" 
         :alt="title"
