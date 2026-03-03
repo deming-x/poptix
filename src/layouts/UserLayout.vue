@@ -48,7 +48,7 @@ const navGroups = [
 
             <!-- Navigation Links -->
             <nav class="space-y-6">
-              <template v-for="(group, groupIndex) in navGroups" :key="groupIndex">
+              <template v-for="group in navGroups" :key="group.title || 'main'">
                 <div>
                   <div 
                     v-if="group.title" 

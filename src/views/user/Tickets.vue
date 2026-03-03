@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import UserTicketCard from '../../components/user/UserTicketCard.vue'
 import SellingTicketCard from '../../components/user/SellingTicketCard.vue'
+import ResaleModal from '../../components/user/ResaleModal.vue'
 
 const activeTab = ref('inventory')
 const currentPage = ref(1)
@@ -110,6 +111,26 @@ const sellingTickets = [
     status: '挂售中'
   }
 ]
+
+// Modal State
+const isResaleModalOpen = ref(false)
+const selectedTicket = ref<any>(null)
+
+const openResaleModal = (ticket: any) => {
+  selectedTicket.value = ticket
+  isResaleModalOpen.value = true
+}
+
+const closeResaleModal = () => {
+  isResaleModalOpen.value = false
+  selectedTicket.value = null
+}
+
+const handleResaleConfirm = (data: { price: number; endTime: string }) => {
+  console.log('Resale confirmed with:', data, 'for ticket:', selectedTicket.value)
+  // Logic to handle actual listing goes here
+  closeResaleModal()
+}
 </script>
 
 <template>
@@ -144,6 +165,7 @@ const sellingTickets = [
           :key="ticket.id"
           :ticket="ticket"
           :isActive="index === 0"
+          @resale="openResaleModal(ticket)"
         />
 
       </div>
@@ -216,5 +238,13 @@ const sellingTickets = [
         </button>
       </nav>
     </div>
+
+    <!-- Modals -->
+    <ResaleModal 
+      :isOpen="isResaleModalOpen" 
+      :ticket="selectedTicket"
+      @close="closeResaleModal"
+      @confirm="handleResaleConfirm"
+    />
   </div>
 </template>

@@ -14,6 +14,12 @@ interface TicketProps {
 defineProps<{
   ticket: TicketProps
 }>()
+
+const emit = defineEmits(['resale'])
+
+const handleResaleClick = () => {
+  emit('resale')
+}
 </script>
 
 <template>
@@ -72,7 +78,10 @@ defineProps<{
       </div>
       
       <!-- Action Button -->
-      <button class="px-7 py-2.5 rounded-full bg-[#8b3dff] hover:bg-[#7a2ce0] text-white flex items-center justify-center transition-colors shadow-sm">
+      <button 
+        @click.stop="handleResaleClick"
+        class="px-7 py-2.5 rounded-full bg-[#8b3dff] hover:bg-[#7a2ce0] text-white flex items-center justify-center transition-colors shadow-sm"
+      >
         <span class="text-[16px] font-medium leading-none">去挂售</span>
       </button>
     </div>
