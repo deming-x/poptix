@@ -4,6 +4,7 @@ import UserTicketCard from '../../components/user/UserTicketCard.vue'
 import SellingTicketCard from '../../components/user/SellingTicketCard.vue'
 
 const activeTab = ref('inventory')
+const currentPage = ref(1)
 
 const tabs = [
   { id: 'inventory', label: '票夹仓库(2)' },
@@ -112,12 +113,12 @@ const sellingTickets = [
 </script>
 
 <template>
-  <div class="px-8 py-10 h-full flex flex-col">
+  <div class="p-6 h-full flex flex-col">
     <!-- Header -->
-    <h1 class="text-[28px] font-bold text-[#1a1a1a] mb-8">我的票夹</h1>
+    <h1 class="text-[28px] font-bold text-[#1a1a1a] mb-4">我的票夹</h1>
 
     <!-- Tabs Container -->
-    <div class="flex items-center bg-[#f4f5f8] p-1.5 rounded-full mb-8 w-full">
+    <div class="flex items-center bg-[#f4f5f8] p-1.5 rounded-full mb-4 w-full">
       <button
         v-for="tab in tabs"
         :key="tab.id"
@@ -165,42 +166,52 @@ const sellingTickets = [
     </div>
 
     <!-- Pagination Section -->
-    <div v-if="activeTab === 'inventory' || activeTab === 'selling'" class="mt-12 mb-4 flex justify-end">
+    <div v-if="activeTab === 'inventory' || activeTab === 'selling'" class="mt-4 mb-4 flex justify-end">
       <nav class="flex items-center space-x-2">
         <!-- Prev Button -->
-        <button class="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-[#1a1a1a] transition-colors rounded-full hover:bg-gray-100">
+        <button 
+          @click="currentPage > 1 && (currentPage--)"
+          class="w-8 h-8 flex items-center justify-center transition-colors rounded-full"
+          :class="[
+            currentPage === 1 
+              ? 'text-gray-300 cursor-not-allowed' 
+              : 'text-[#1a1a1a] hover:text-[#a855f7] hover:bg-purple-50'
+          ]"
+          :disabled="currentPage === 1"
+        >
            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
            </svg>
         </button>
 
         <!-- Dynamic Pages -->
-        <!-- Page 1 (Active) -->
-        <button class="w-10 h-10 flex items-center justify-center rounded-full bg-[#a855f7] text-white font-bold shadow-md shadow-purple-200 transition-transform hover:scale-105">
-          1
-        </button>
-        <!-- Page 2 (Inactive, Hover outline) -->
-         <button class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-[#a855f7] text-[#a855f7] font-medium hover:bg-purple-50 transition-colors">
-          2
-        </button>
-        <!-- Pages 3-6 (Inactive, Gray) -->
-        <button class="w-10 h-10 flex items-center justify-center rounded-full bg-[#f4f5f8] text-gray-600 font-medium hover:bg-gray-200 transition-colors">
-          3
-        </button>
-        <button class="w-10 h-10 flex items-center justify-center rounded-full bg-[#f4f5f8] text-gray-600 font-medium hover:bg-gray-200 transition-colors">
-          4
-        </button>
-        <button class="w-10 h-10 flex items-center justify-center rounded-full bg-[#f4f5f8] text-gray-600 font-medium hover:bg-gray-200 transition-colors">
-          5
-        </button>
-        <button class="w-10 h-10 flex items-center justify-center rounded-full bg-[#f4f5f8] text-gray-600 font-medium hover:bg-gray-200 transition-colors">
-          6
+        <button
+          v-for="page in 6"
+          :key="page"
+          @click="currentPage = page"
+          class="w-10 h-10 flex items-center justify-center rounded-[16px] font-medium transition-all duration-300"
+          :class="[
+            currentPage === page
+              ? 'bg-[#a855f7] text-white font-bold shadow-[0_8px_30px_rgba(168,85,247,0.3)] hover:scale-105'
+              : 'bg-[#f4f5f8] text-[#4b5563] hover:bg-white hover:border hover:border-[#a855f7] hover:text-[#a855f7]'
+          ]"
+        >
+          {{ page }}
         </button>
 
         <!-- Next Button -->
-        <button class="w-8 h-8 flex items-center justify-center text-[#1a1a1a] hover:text-[#a855f7] transition-colors rounded-full hover:bg-purple-50">
+        <button 
+          @click="currentPage < 6 && (currentPage++)"
+          class="w-8 h-8 flex items-center justify-center transition-colors rounded-full"
+          :class="[
+            currentPage === 6 
+              ? 'text-gray-300 cursor-not-allowed' 
+              : 'text-[#1a1a1a] hover:text-[#a855f7] hover:bg-purple-50'
+          ]"
+          :disabled="currentPage === 6"
+        >
            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7-7" />
+             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
            </svg>
         </button>
       </nav>

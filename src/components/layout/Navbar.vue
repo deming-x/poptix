@@ -77,7 +77,7 @@ const menuItems = [
         <!-- Right Side Actions (Includes Search Bar) -->
         <div class="flex items-center space-x-8 flex-1 justify-end">
           <!-- Search Bar (Desktop) -->
-          <div class="hidden md:flex w-[480px]">
+          <div class="hidden md:flex w-[400px]">
             <div class="relative w-full">
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <svg class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
