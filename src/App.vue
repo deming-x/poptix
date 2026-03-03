@@ -7,7 +7,7 @@ import Footer from './components/layout/Footer.vue'
   <div class="min-h-screen bg-white flex flex-col">
     <Navbar />
     
-    <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="flex-grow w-full">
       <router-view v-slot="{ Component }">
         <transition
           enter-active-class="transition ease-out duration-200"

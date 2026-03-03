@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const isMobileMenuOpen = ref(false)
 const isLoggedIn = ref(false)
+const isProfileOpen = ref(false)
+const profileRef = ref<HTMLElement | null>(null)
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -13,9 +15,40 @@ const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
 }
 
+const toggleProfile = () => {
+  isProfileOpen.value = !isProfileOpen.value
+}
+
 const handleLogin = () => {
   isLoggedIn.value = true
 }
+
+const handleSignOut = () => {
+  isLoggedIn.value = false
+  isProfileOpen.value = false
+}
+
+// Click outside to close profile dropdown
+const handleClickOutside = (event: MouseEvent) => {
+  if (profileRef.value && !profileRef.value.contains(event.target as Node)) {
+    isProfileOpen.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('mousedown', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('mousedown', handleClickOutside)
+})
+
+const menuItems = [
+  { name: 'Wallet', path: '/user/wallet', icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z' },
+  { name: 'Tickets', path: '/user/tickets', icon: 'M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z' },
+  { name: 'Coupons', path: '/user/coupons', icon: 'M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z' }, // Simplified for now
+  { name: 'Orders', path: '/user/orders', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' },
+]
 </script>
 
 <template>
@@ -26,8 +59,8 @@ const handleLogin = () => {
       </p>
     </div>
   </div>
-  <nav class="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50 h-[72px] flex items-center">
-    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
+  <nav class="bg-white shadow-sm border-b border-gray-100 h-[72px] flex items-center">
+    <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 w-full">
       <div class="flex justify-between items-center h-full">
         <!-- Logo -->
         <div class="flex items-center">
@@ -75,19 +108,74 @@ const handleLogin = () => {
           <!-- Auth Actions -->
           <div class="hidden sm:block">
             <!-- Logged In State -->
-            <div v-if="isLoggedIn" class="flex items-center space-x-3 cursor-pointer group px-1">
-              <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-transparent group-hover:border-[#8b3dff]/20 transition-all duration-200">
-                <img 
-                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop" 
-                  alt="Jay Chou"
-                  class="w-full h-full object-cover"
-                />
+            <div v-if="isLoggedIn" class="relative" ref="profileRef">
+              <div @click="toggleProfile" class="flex items-center space-x-3 cursor-pointer group px-1">
+                <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-transparent group-hover:border-[#8b3dff]/20 transition-all duration-200">
+                  <img 
+                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop" 
+                    alt="Jay Chou"
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+                <div class="flex items-center space-x-1">
+                  <span class="text-[15px] font-bold text-[#1a1a1a]">Jay Chou</span>
+                  <svg class="h-3.5 w-3.5 text-gray-400 group-hover:text-gray-600 transition-colors" :class="{'rotate-180': isProfileOpen}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
-              <div class="flex items-center space-x-1">
-                <span class="text-[15px] font-bold text-[#1a1a1a]">Jay Chou</span>
-                <svg class="h-3.5 w-3.5 text-gray-400 group-hover:text-gray-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
-                </svg>
+
+              <!-- Profile Dropdown -->
+              <div v-if="isProfileOpen" class="absolute right-0 mt-4 w-[320px] bg-white rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-50 py-8 px-6 z-50 transform origin-top-right transition-all duration-200">
+                <!-- Header -->
+                <div class="flex flex-col items-center text-center space-y-2 mb-8">
+                  <div class="w-20 h-20 rounded-full overflow-hidden mb-2 ring-4 ring-gray-50">
+                    <img 
+                      src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop" 
+                      alt="Maria Joyyce"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <h2 class="text-[22px] font-bold text-[#1a1a1a]">Maria Joyyce</h2>
+                  <p class="text-[14px] text-gray-500 font-medium">Maria.Jiayce@Gmail.Com</p>
+                </div>
+
+                <!-- Menu Items -->
+                <div class="space-y-2 mb-8">
+                  <!-- Profile Button (Gradient) -->
+                  <button class="w-full flex items-center justify-between bg-gradient-to-r from-[#b34af1] to-[#f11a8a] text-white p-4 rounded-[20px] shadow-lg shadow-purple-100 hover:scale-[1.02] transition-all duration-200 group/btn">
+                    <div class="flex items-center space-x-3">
+                      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      <span class="text-[18px] font-semibold">Profile</span>
+                    </div>
+                    <svg class="h-6 w-6 text-white/80 group-hover/btn:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  <!-- Regular Items -->
+                  <router-link :to="item.path" v-for="item in menuItems" :key="item.name" class="w-full flex items-center justify-between p-4 rounded-[20px] hover:bg-gray-50 transition-colors group/item" @click="isProfileOpen = false">
+                    <div class="flex items-center space-x-3 text-[#1a1a1a]">
+                      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="item.icon" />
+                      </svg>
+                      <span class="text-[18px] font-semibold">{{ item.name }}</span>
+                    </div>
+                    <svg class="h-6 w-6 text-gray-300 group-hover/item:text-gray-900 group-hover/item:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7-7" />
+                    </svg>
+                  </router-link>
+                </div>
+
+                <!-- Sign Out -->
+                <button @click="handleSignOut" class="w-full flex items-center justify-center space-x-3 border border-gray-200 p-4 rounded-full text-[#1a1a1a] hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-bold text-[18px]">
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  <span>Sign Out</span>
+                </button>
               </div>
             </div>
 
