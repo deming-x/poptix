@@ -134,21 +134,31 @@ const handleResaleConfirm = (data: { price: number; endTime: string }) => {
 </script>
 
 <template>
-  <div class="p-6 h-full flex flex-col">
-    <!-- Header -->
-    <h1 class="text-[28px] font-bold text-[#1a1a1a] mb-4">我的票夹</h1>
+  <div class="px-4 py-4 md:p-6 h-full flex flex-col bg-[#f4f5f8] md:bg-white min-h-screen md:min-h-0">
+    <!-- Desktop Header -->
+    <h1 class="hidden md:block text-[28px] font-bold text-[#1a1a1a] mb-4">我的票夹</h1>
+
+    <!-- Mobile Header -->
+    <div class="flex md:hidden items-center justify-center relative mb-4 h-11">
+      <button class="absolute left-0 w-8 h-8 flex items-center justify-center">
+        <svg class="w-6 h-6 text-[#1a1a1a]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <h1 class="text-[17px] font-semibold text-[#1a1a1a]">我的票夹</h1>
+    </div>
 
     <!-- Tabs Container -->
-    <div class="flex items-center bg-[#f4f5f8] p-1.5 rounded-full mb-4 w-full">
+    <div class="flex items-center bg-[#ecedf1] md:bg-[#f4f5f8] p-[3px] md:p-1.5 rounded-full mb-4 w-full md:w-auto">
       <button
         v-for="tab in tabs"
         :key="tab.id"
         @click="activeTab = tab.id"
-        class="flex-1 py-2 text-[15px] rounded-full transition-all duration-300 relative overflow-hidden"
+        class="flex-1 py-1.5 md:py-2 text-[14px] md:text-[15px] rounded-full transition-all duration-300 relative overflow-hidden flex items-center justify-center"
         :class="[
           activeTab === tab.id 
-            ? 'text-white font-bold bg-gradient-to-r from-[#a855f7] to-[#8b5cf6] shadow-sm' 
-            : 'text-gray-500 font-medium hover:text-gray-900 bg-transparent'
+            ? 'text-[#1a1a1a] md:text-white font-bold bg-white md:bg-gradient-to-r md:from-[#a855f7] md:to-[#8b5cf6] shadow-sm' 
+            : 'text-[#9ca3af] md:text-gray-500 font-medium md:hover:text-gray-900 bg-transparent'
         ]"
       >
         <span>{{ tab.label }}</span>
@@ -157,7 +167,7 @@ const handleResaleConfirm = (data: { price: number; endTime: string }) => {
 
     <!-- Content Area (Grid) -->
     <div class="flex-1">
-      <div v-if="activeTab === 'inventory'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div v-if="activeTab === 'inventory'" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
         
         <!-- Ticket Card Component -->
         <UserTicketCard 
@@ -171,7 +181,7 @@ const handleResaleConfirm = (data: { price: number; endTime: string }) => {
       </div>
 
       <!-- Empty States (Optional for completeness) -->
-      <div v-else-if="activeTab === 'selling'" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div v-else-if="activeTab === 'selling'" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
         <SellingTicketCard 
           v-for="ticket in sellingTickets" 
           :key="ticket.id"
@@ -188,7 +198,7 @@ const handleResaleConfirm = (data: { price: number; endTime: string }) => {
     </div>
 
     <!-- Pagination Section -->
-    <div v-if="activeTab === 'inventory' || activeTab === 'selling'" class="mt-4 mb-4 flex justify-end">
+    <div v-if="activeTab === 'inventory' || activeTab === 'selling'" class="mt-4 mb-4 hidden md:flex justify-end">
       <nav class="flex items-center space-x-2">
         <!-- Prev Button -->
         <button 

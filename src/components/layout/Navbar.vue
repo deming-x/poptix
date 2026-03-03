@@ -6,10 +6,7 @@ const isLoggedIn = ref(false)
 const isProfileOpen = ref(false)
 const profileRef = ref<HTMLElement | null>(null)
 
-const navLinks = [
-  { name: 'Home', path: '/' },
-  { name: 'About', path: '/about' },
-]
+
 
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
@@ -206,48 +203,119 @@ const menuItems = [
       </div>
     </div>
 
-    <!-- Mobile menu -->
-    <div v-if="isMobileMenuOpen" class="md:hidden absolute top-[72px] inset-x-0 bg-white border-b border-gray-100 shadow-xl z-50">
-      <div class="px-4 py-4 space-y-4">
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-            </svg>
+    <!-- Mobile Sidebar Menu -->
+    <Teleport to="body">
+      <transition
+        enter-active-class="transition-opacity ease-linear duration-300"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition-opacity ease-linear duration-300"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div v-if="isMobileMenuOpen" class="fixed inset-0 bg-black/50 z-[90] md:hidden" @click="isMobileMenuOpen = false"></div>
+      </transition>
+
+      <transition
+        enter-active-class="transition ease-in-out duration-300 transform"
+        enter-from-class="-translate-x-full"
+        enter-to-class="translate-x-0"
+        leave-active-class="transition ease-in-out duration-300 transform"
+        leave-from-class="translate-x-0"
+        leave-to-class="-translate-x-full"
+      >
+        <div v-if="isMobileMenuOpen" class="fixed inset-y-0 left-0 w-[280px] bg-white z-[100] md:hidden shadow-2xl flex flex-col">
+          <!-- Sidebar Header (Logo) -->
+          <div class="px-6 pt-10 pb-8 flex items-center space-x-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-[#d946ef] to-[#7c3aed] rounded-xl flex items-center justify-center shadow-sm shrink-0">
+              <span class="text-white text-2xl font-black italic">P</span>
+            </div>
+            <span class="text-2xl font-black tracking-tight text-[#c026d3]">
+              POPTIX
+            </span>
           </div>
-          <input
-            type="text"
-            class="block w-full bg-gray-100 border-transparent rounded-full py-2 pl-10 pr-3 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#8b3dff]"
-            placeholder="搜索更多活动/演出/音乐会"
-          />
-        </div>
-        <div class="space-y-1">
-          <router-link
-            v-for="link in navLinks"
-            :key="link.path"
-            :to="link.path"
-            @click="isMobileMenuOpen = false"
-            class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-[#8b3dff]"
-          >
-            {{ link.name }}
-          </router-link>
-        </div>
-        <div class="pt-4 border-t border-gray-100">
-          <div v-if="isLoggedIn" class="flex items-center space-x-3 px-3">
-             <div class="w-10 h-10 rounded-full overflow-hidden">
-                <img 
-                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop" 
-                  alt="Jay Chou"
-                  class="w-full h-full object-cover"
-                />
-              </div>
-              <span class="text-[15px] font-bold text-[#1a1a1a]">Jay Chou</span>
+
+          <!-- Sidebar Links -->
+          <div class="px-4 space-y-1 flex-1 overflow-y-auto pb-6">
+            <router-link
+              to="/"
+              @click="isMobileMenuOpen = false"
+              class="flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-[16px] font-medium bg-[#f3e8ff] text-[#8b3dff]"
+            >
+              <svg class="h-[22px] w-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+              <span>Home</span>
+            </router-link>
+
+            <router-link
+              to="/user/profile"
+              @click="isMobileMenuOpen = false"
+              class="flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-[16px] font-medium text-gray-700 hover:bg-gray-50"
+            >
+              <svg class="h-[22px] w-[22px] text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span>Profile Center</span>
+            </router-link>
+
+            <router-link
+              to="/user/wallet"
+              @click="isMobileMenuOpen = false"
+              class="flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-[16px] font-medium text-gray-700 hover:bg-gray-50"
+            >
+              <svg class="h-[22px] w-[22px] text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
+              <span>My Wallet</span>
+            </router-link>
+
+            <router-link
+              to="/user/tickets"
+              @click="isMobileMenuOpen = false"
+              class="flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-[16px] font-medium text-gray-700 hover:bg-gray-50"
+            >
+              <svg class="h-[22px] w-[22px] text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+              </svg>
+              <span>My Ticket</span>
+            </router-link>
+
+            <router-link
+              to="/user/orders"
+              @click="isMobileMenuOpen = false"
+              class="flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-[16px] font-medium text-gray-700 hover:bg-gray-50"
+            >
+              <svg class="h-[22px] w-[22px] text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+              <span>My Order</span>
+            </router-link>
+
+            <router-link
+              to="/user/settings"
+              @click="isMobileMenuOpen = false"
+              class="flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-[16px] font-medium text-gray-700 hover:bg-gray-50"
+            >
+              <svg class="h-[22px] w-[22px] text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span>Settings</span>
+            </router-link>
+
+            <button
+              @click="isMobileMenuOpen = false"
+              class="w-full flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-[16px] font-medium text-gray-700 hover:bg-gray-50"
+            >
+              <svg class="h-[22px] w-[22px] text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9h18" />
+              </svg>
+              <span>English / HKD</span>
+            </button>
           </div>
-          <button v-else @click="handleLogin" class="w-full bg-[#8b3dff] text-white px-4 py-3 rounded-full text-base font-semibold shadow-lg">
-            Sign In
-          </button>
         </div>
-      </div>
-    </div>
+      </transition>
+    </Teleport>
   </nav>
 </template>

@@ -24,12 +24,12 @@ const navGroups = [
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#f4f4f7] pt-[32px] pb-12">
-    <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col lg:flex-row gap-8">
+  <div class="min-h-screen bg-[#f4f5f8] lg:bg-[#f4f4f7] lg:pt-[32px] lg:pb-12">
+    <div class="max-w-[1200px] mx-auto px-0 md:px-4 lg:px-8">
+      <div class="flex flex-col lg:flex-row gap-0 lg:gap-8">
         
         <!-- Sidebar -->
-        <aside class="w-full lg:w-[280px] shrink-0">
+        <aside class="hidden lg:block w-full lg:w-[280px] shrink-0">
           <div class="bg-white rounded-[24px] shadow-sm p-6 sticky top-[104px]">
             <!-- User Info -->
             <div class="flex items-center space-x-3 mb-8">
@@ -82,7 +82,7 @@ const navGroups = [
         </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 bg-white rounded-[32px] shadow-sm min-h-[600px] overflow-hidden">
+        <main class="flex-1 bg-transparent lg:bg-white lg:rounded-[32px] lg:shadow-sm min-h-screen lg:min-h-[600px] overflow-hidden">
           <router-view />
         </main>
         
