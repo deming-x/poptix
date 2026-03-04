@@ -26,8 +26,8 @@ defineProps<{
         <span>成交时间</span>
         <span>{{ ticket.transactionTime }}</span>
       </div>
-      <div class="px-[8px] py-[4px] bg-[#e8faef] rounded-[8px] md:rounded-full flex items-center justify-center h-fit">
-        <span class="text-[#3DD598] text-[12px] md:text-[14px] font-medium leading-none">{{ ticket.status }}</span>
+      <div class="px-[8px] py-[4px] bg-[#D4FDE5] rounded-[8px] md:rounded-full flex items-center justify-center h-fit">
+        <span class="text-[#00A63D] text-[12px] md:text-[14px] font-medium leading-none">{{ ticket.status }}</span>
       </div>
     </div>
 
@@ -86,7 +86,7 @@ defineProps<{
       </div>
       
       <!-- Action Status (Instead of Button) -->
-      <div class="text-[14px] md:text-[15px] font-medium text-[#3DD598]">
+      <div class="text-[14px] md:text-[15px] font-medium text-[#00A63D]">
         资金已到账
       </div>
     </div>
