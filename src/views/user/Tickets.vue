@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import UserTicketCard from '../../components/user/UserTicketCard.vue'
 import SellingTicketCard from '../../components/user/SellingTicketCard.vue'
 import ResaleModal from '../../components/user/ResaleModal.vue'
@@ -8,6 +9,11 @@ import HistoryTicketCard from '../../components/user/HistoryTicketCard.vue'
 
 const activeTab = ref('inventory')
 const currentPage = ref(1)
+const router = useRouter()
+
+const goBack = () => {
+  router.push('/')
+}
 
 const tabs = [
   { id: 'inventory', label: '票夹仓库(2)' },
@@ -231,7 +237,7 @@ const confirmDelist = () => {
 
     <!-- Mobile Header -->
     <div class="flex md:hidden items-center justify-center relative mb-4 h-11">
-      <button class="absolute left-0 w-8 h-8 flex items-center justify-center">
+      <button @click="goBack" class="absolute left-0 w-8 h-8 flex items-center justify-center">
         <svg class="w-6 h-6 text-[#1a1a1a]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>

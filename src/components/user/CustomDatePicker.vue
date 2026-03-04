@@ -317,13 +317,13 @@ const confirmTime = () => {
           </button>
           
           <div class="flex items-center gap-3">
-            <div class="bg-transparent rounded-[14px] px-5 py-2.5 font-black text-[#1a1a1a] flex items-center gap-2 text-[20px] relative">
+            <div class="bg-white rounded-[14px] px-5 py-2.5 font-black text-[#1a1a1a] flex items-center gap-2 text-[20px] relative shadow-sm">
               {{ currentMonthName }}
               <svg class="w-2.5 h-2.5 text-[#8B2CF5] absolute bottom-1.5 right-1.5" viewBox="0 0 10 10" fill="currentColor">
                 <polygon points="0,10 10,10 10,0"/>
               </svg>
             </div>
-            <div class="bg-transparent rounded-[14px] px-5 py-2.5 font-black text-[#1a1a1a] flex items-center gap-2 text-[20px] relative">
+            <div class="bg-white rounded-[14px] px-5 py-2.5 font-black text-[#1a1a1a] flex items-center gap-2 text-[20px] relative shadow-sm">
               {{ currentYear }}
               <svg class="w-2.5 h-2.5 text-[#8B2CF5] absolute bottom-1.5 right-1.5" viewBox="0 0 10 10" fill="currentColor">
                 <polygon points="0,10 10,10 10,0"/>
@@ -366,20 +366,20 @@ const confirmTime = () => {
               :class="[
                 // Boundary States (Solid Purple)
                 (isSelected(day.date) && isSelectionFuture) || (isToday(day.date) && isSelectionFuture)
-                  ? 'bg-[#8B2CF5] text-white font-black shadow-lg shadow-[#8B2CF5]/40 rounded-[12px] scale-105 z-10' 
+                  ? 'bg-[#8B2CF5] text-white font-black shadow-lg shadow-[#8B2CF5]/40 rounded-[12px] scale-105 z-10 cursor-pointer' 
                   : '',
                 // Initial State (Outline Purple for Today)
                 isToday(day.date) && !isSelectionFuture
-                  ? 'border-[2px] border-[#8B2CF5] text-[#8B2CF5] font-black rounded-[12px] z-10 mx-1'
+                  ? 'border-[2px] border-[#8B2CF5] text-[#8B2CF5] font-black rounded-[12px] z-10 mx-1 cursor-pointer'
                   : '',
                 // Normal States
                 !isToday(day.date) && !isSelected(day.date) && !isInRange(day.date)
                   ? (isBeforeToday(day.date)
                     ? 'text-[#d1d5db] cursor-not-allowed opacity-60 bg-transparent'
-                    : 'bg-transparent font-bold text-[#1a1a1a] hover:bg-[#8B2CF5]/10 hover:text-[#8B2CF5] cursor-pointer rounded-[12px] mx-1')
+                    : 'bg-white shadow-sm font-bold text-[#1a1a1a] hover:bg-[#8B2CF5]/10 hover:text-[#8B2CF5] cursor-pointer rounded-[12px] mx-1')
                   : '',
                 // Range State (Text only)
-                isInRange(day.date) ? 'text-[#8B2CF5] font-bold' : '',
+                isInRange(day.date) ? 'text-[#8B2CF5] font-bold cursor-pointer' : '',
                 // Padded days styling
                 !day.isCurrentMonth && !isSelected(day.date) && !isToday(day.date) && !isInRange(day.date) && !isBeforeToday(day.date) ? '!text-[#9ca3af] !font-medium' : ''
               ]"
