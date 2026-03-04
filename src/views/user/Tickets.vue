@@ -4,6 +4,7 @@ import UserTicketCard from '../../components/user/UserTicketCard.vue'
 import SellingTicketCard from '../../components/user/SellingTicketCard.vue'
 import ResaleModal from '../../components/user/ResaleModal.vue'
 import UnlistConfirmModal from '../../components/user/UnlistConfirmModal.vue'
+import HistoryTicketCard from '../../components/user/HistoryTicketCard.vue'
 
 const activeTab = ref('inventory')
 const currentPage = ref(1)
@@ -69,7 +70,7 @@ const sellingTickets = ref([
     price: 1280,
     payout: 1180,
     image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
-    expiryTime: '6天 01:28:24',
+    expiryTime: '2026-03-10 18:28:55',
     status: '挂售中'
   },
   {
@@ -82,7 +83,7 @@ const sellingTickets = ref([
     price: 1280,
     payout: 1180,
     image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
-    expiryTime: '6天 01:28:24',
+    expiryTime: '2026-03-10 18:28:55',
     status: '挂售中'
   },
   {
@@ -95,7 +96,7 @@ const sellingTickets = ref([
     price: 1280,
     payout: 1180,
     image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
-    expiryTime: '6天 01:28:24',
+    expiryTime: '2026-03-10 18:28:55',
     status: '挂售中'
   },
   {
@@ -108,8 +109,63 @@ const sellingTickets = ref([
     price: 1280,
     payout: 1180,
     image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
-    expiryTime: '6天 01:28:24',
+    expiryTime: '2026-03-10 18:28:55',
     status: '挂售中'
+  }
+])
+
+const historyTickets = ref([
+  {
+    id: 1,
+    title: '2025-26 Aespa LIVE TOUR – SYNK: AeXIS LINE –香港站',
+    type: '实体票',
+    time: '周一 2026/01/26 19:00',
+    address: '香港九龙启德乘启道38号',
+    seat: '107A 14排 12号',
+    price: 1280,
+    payout: 1180,
+    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
+    transactionTime: '2026/02/28 01:28:24',
+    status: '已结算'
+  },
+  {
+    id: 2,
+    title: '2025-26 Aespa LIVE TOUR – SYNK: AeXIS LINE –香港站',
+    type: '实体票',
+    time: '周一 2026/01/26 19:00',
+    address: '香港九龙启德乘启道38号',
+    seat: '107A 14排 12号',
+    price: 1280,
+    payout: 1180,
+    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
+    transactionTime: '2026/02/28 01:28:24',
+    status: '已结算'
+  },
+  {
+    id: 3,
+    title: '2025-26 Aespa LIVE TOUR – SYNK: AeXIS LINE –香港站',
+    type: '实体票',
+    time: '周一 2026/01/26 19:00',
+    address: '香港九龙启德乘启道38号',
+    seat: '107A 14排 12号',
+    price: 1280,
+    payout: 1180,
+    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
+    transactionTime: '2026/02/28 01:28:24',
+    status: '已结算'
+  },
+  {
+    id: 4,
+    title: '2025-26 Aespa LIVE TOUR – SYNK: AeXIS LINE –香港站',
+    type: '实体票',
+    time: '周一 2026/01/26 19:00',
+    address: '香港九龙启德乘启道38号',
+    seat: '107A 14排 12号',
+    price: 1280,
+    payout: 1180,
+    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop',
+    transactionTime: '2026/02/28 01:28:24',
+    status: '已结算'
   }
 ])
 
@@ -219,7 +275,7 @@ const confirmDelist = () => {
         leave-to-class="opacity-0"
         mode="out-in"
       >
-        <div v-if="activeTab === 'inventory'" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6" key="inventory">
+        <div v-if="activeTab === 'inventory'" class="grid grid-cols-1 md:grid-cols-2 gap-4" key="inventory">
           
           <!-- Ticket Card Component -->
           <UserTicketCard 
@@ -233,7 +289,7 @@ const confirmDelist = () => {
         </div>
 
         <!-- Empty States (Optional for completeness) -->
-        <div v-else-if="activeTab === 'selling'" class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6" key="selling">
+        <div v-else-if="activeTab === 'selling'" class="grid grid-cols-1 md:grid-cols-2 gap-4" key="selling">
           <SellingTicketCard 
             v-for="ticket in sellingTickets" 
             :key="ticket.id"
@@ -241,17 +297,18 @@ const confirmDelist = () => {
             @delist="handleDelist(ticket)"
           />
         </div>
-        <div v-else class="flex flex-col items-center justify-center h-64 text-gray-400" key="history">
-           <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-           </svg>
-           <p>暂无历史记录</p>
+        <div v-else-if="activeTab === 'history'" class="grid grid-cols-1 md:grid-cols-2 gap-4" key="history">
+          <HistoryTicketCard 
+            v-for="ticket in historyTickets" 
+            :key="ticket.id"
+            :ticket="ticket"
+          />
         </div>
       </Transition>
     </div>
 
     <!-- Pagination Section -->
-    <div v-if="activeTab === 'inventory' || activeTab === 'selling'" class="mt-4 mb-4 hidden md:flex justify-end">
+    <div v-if="['inventory', 'selling', 'history'].includes(activeTab)" class="mt-4 mb-4 hidden md:flex justify-end">
       <nav class="flex items-center space-x-2">
         <!-- Prev Button -->
         <button 

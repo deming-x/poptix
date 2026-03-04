@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
-
-interface SellingTicketProps {
+interface HistoryTicketProps {
   id: number | string
   title: string
   type: string
@@ -11,99 +9,25 @@ interface SellingTicketProps {
   price: number | string
   payout: number | string
   image: string
-  expiryTime: string
+  transactionTime: string
   status: string
 }
 
-const props = defineProps<{
-  ticket: SellingTicketProps
+defineProps<{
+  ticket: HistoryTicketProps
 }>()
-
-const emit = defineEmits(['delist'])
-
-const displayTime = ref('')
-let timer: ReturnType<typeof setTimeout> | null = null
-
-const updateCountdown = () => {
-  if (!props.ticket.expiryTime) {
-    displayTime.value = '即将下架'
-    return
-  }
-
-  let targetDate: Date
-  
-  // Attempt to parse '2026-03-04 18:28:55' or similar
-  const isoParsed = new Date(props.ticket.expiryTime.replace(' ', 'T'))
-  if (!isNaN(isoParsed.getTime())) {
-    targetDate = isoParsed
-  } else if (props.ticket.expiryTime.includes('天')) {
-    // legacy format: '6天 01:28:24'
-    const match = props.ticket.expiryTime.match(/(\d+)天\s*(\d{2}):(\d{2}):(\d{2})/)
-    if (match) {
-      const now = new Date()
-      targetDate = new Date(now.getTime() + 
-        (parseInt(match[1]) * 24 * 60 * 60 * 1000) +
-        (parseInt(match[2]) * 60 * 60 * 1000) +
-        (parseInt(match[3]) * 60 * 1000) +
-        (parseInt(match[4]) * 1000)
-      )
-    } else {
-      displayTime.value = props.ticket.expiryTime
-      return
-    }
-  } else {
-    displayTime.value = props.ticket.expiryTime
-    return
-  }
-
-  const now = new Date()
-  const diff = targetDate.getTime() - now.getTime()
-
-  if (diff <= 0) {
-    displayTime.value = '已过期'
-    if (timer) clearInterval(timer)
-    return
-  }
-
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-  const seconds = Math.floor((diff % (1000 * 60)) / 1000)
-
-  const hStr = String(hours).padStart(2, '0')
-  const mStr = String(minutes).padStart(2, '0')
-  const sStr = String(seconds).padStart(2, '0')
-
-  if (days > 0) {
-    displayTime.value = `${days}天 ${hStr}:${mStr}:${sStr}`
-  } else {
-    displayTime.value = `${hStr}:${mStr}:${sStr}`
-  }
-}
-
-onMounted(() => {
-  updateCountdown()
-  timer = setInterval(updateCountdown, 1000)
-})
-
-onUnmounted(() => {
-  if (timer) clearInterval(timer)
-})
-
-watch(() => props.ticket.expiryTime, () => {
-  updateCountdown()
-})
 </script>
 
 <template>
   <div class="rounded-[16px] md:rounded-[24px] p-4 md:p-6 bg-white md:bg-[#8B2CF5]/5 transition-all duration-300 relative border-2 border-transparent lg:hover:border-[#8B2CF5] lg:hover:shadow-[0_8px_30px_rgba(139,61,255,0.12)]">
-    <!-- Top Row: Expiry Timer and Status Badge -->
+    <!-- Top Row: Transaction Time and Status Badge -->
     <div class="flex items-center justify-between mb-4">
-      <div class="text-[#F0000F] text-[13px] md:text-[15px] font-medium leading-none">
-        距离自动下架: {{ displayTime }}
+      <div class="text-[#999999] text-[13px] md:text-[15px] font-medium leading-none flex items-center gap-1.5">
+        <span>成交时间</span>
+        <span>{{ ticket.transactionTime }}</span>
       </div>
-      <div class="px-[8px] py-[4px] bg-[#fff7e6] rounded-[8px] md:rounded-full flex items-center justify-center h-fit">
-        <span class="text-[#fa8c16] text-[12px] md:text-[14px] font-medium leading-none">{{ ticket.status }}</span>
+      <div class="px-[8px] py-[4px] bg-[#e8faef] rounded-[8px] md:rounded-full flex items-center justify-center h-fit">
+        <span class="text-[#3DD598] text-[12px] md:text-[14px] font-medium leading-none">{{ ticket.status }}</span>
       </div>
     </div>
 
@@ -145,26 +69,26 @@ watch(() => props.ticket.expiryTime, () => {
     <div class="h-px w-full mb-3 md:mb-6" style="background-image: linear-gradient(to right, #E5E7EB 50%, transparent 50%); background-size: 14px 1px; background-repeat: repeat-x;"></div>
 
     <!-- Bottom Row: Prices and Action -->
-    <div class="flex items-center justify-between">
+    <div class="flex items-end justify-between">
       <div class="space-y-1">
         <div class="flex items-center gap-1.5">
-          <span class="text-[13px] md:text-[14px] text-[#666666] relative top-[0.5px]">挂售价格</span>
+          <span class="text-[13px] md:text-[15px] text-[#666666] md:text-[#999999] relative top-[0.5px]">成交价格</span>
           <span class="text-[20px] md:text-[24px] font-bold text-[#f11a8a] leading-none tracking-tight flex items-baseline">
             <span class="text-[17px] md:text-[22px] font-bold">$&nbsp;</span>{{ ticket.price }}
           </span>
         </div>
         <div class="flex items-center gap-1.5">
-          <span class="text-[13px] md:text-[14px] text-[#999999]">预计到手价</span>
+          <span class="text-[13px] md:text-[14px] text-[#999999]">实际到手价</span>
           <span class="text-[14px] md:text-[15px] font-bold text-[#8B2CF5] leading-none">
             ${{ ticket.payout }}
           </span>
         </div>
       </div>
       
-      <!-- Action Button -->
-      <button @click="emit('delist')" class="px-5 py-2 md:px-7 md:py-2.5 rounded-full bg-[#f4f5f8] md:bg-[#8B2CF5] md:hover:bg-[#9333ea] text-[#1a1a1a] md:text-white text-[14px] md:text-[16px] font-medium transition-all shadow-sm">
-        下架商品
-      </button>
+      <!-- Action Status (Instead of Button) -->
+      <div class="text-[14px] md:text-[15px] font-medium text-[#3DD598]">
+        资金已到账
+      </div>
     </div>
   </div>
 </template>
