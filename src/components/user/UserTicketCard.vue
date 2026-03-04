@@ -43,7 +43,7 @@ const handleResaleClick = () => {
          <h3 class="text-[#2a2a2a] leading-[1.3] text-[15px] md:text-[18px] line-clamp-2 md:font-normal font-medium mb-1 md:mb-2">
            {{ ticket.title }}
          </h3>
-         <div class="inline-flex self-start px-2 py-0.5 md:px-3 md:py-0.5 border border-[#8b3dff] rounded-full">
+         <div class="inline-flex self-start px-[8px] py-[4px] md:px-3 md:py-0.5 border border-[#8b3dff] rounded-[8px] md:rounded-full">
            <span class="text-[11px] md:text-[13px] text-[#8b3dff] leading-none">{{ ticket.type }}</span>
          </div>
       </div>

@@ -1,14 +1,35 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 
 const props = defineProps<{
-  modelValue: string // Expected format YYYY-MM-DD, or empty
+  modelValue: string // Expected format YYYY-MM-DD HH:mm:ss, or empty
 }>()
 
 const emit = defineEmits(['update:modelValue'])
 
 const isOpen = ref(false)
 const popoverRef = ref<HTMLElement | null>(null)
+const viewMode = ref<'date' | 'time'>('date')
+
+// Refs for scroll containers
+const hourScroll = ref<HTMLElement | null>(null)
+const minuteScroll = ref<HTMLElement | null>(null)
+const secondScroll = ref<HTMLElement | null>(null)
+const periodScroll = ref<HTMLElement | null>(null)
+
+// Time selection state
+const selectedHour = ref(6)
+const selectedMinute = ref(28)
+const selectedSecond = ref(55)
+const selectedPeriod = ref<'AM' | 'PM'>('PM')
+
+// Full lists for wheels
+const hours = Array.from({ length: 12 }, (_, i) => i + 1)
+const minutes = Array.from({ length: 60 }, (_, i) => i)
+const seconds = Array.from({ length: 60 }, (_, i) => i)
+const periods = ['AM', 'PM'] as const
+
+const ITEM_HEIGHT = 56 // Matches h-14 (14 * 4px)
 
 // Current view date (month/year being displayed)
 const currentDate = ref(new Date())
@@ -16,9 +37,58 @@ const currentDate = ref(new Date())
 // Initialize from prop if exists
 onMounted(() => {
   if (props.modelValue) {
-    currentDate.value = new Date(props.modelValue)
+    const [datePart, timePart] = props.modelValue.split(' ')
+    currentDate.value = new Date(datePart)
+    
+    if (timePart) {
+      const [h, m, s] = timePart.split(':').map(Number)
+      if (!isNaN(h)) {
+        selectedHour.value = h > 12 ? h - 12 : (h === 0 ? 12 : h)
+        selectedPeriod.value = h >= 12 ? 'PM' : 'AM'
+      }
+      if (!isNaN(m)) selectedMinute.value = m
+      if (!isNaN(s)) selectedSecond.value = s
+    }
   }
 })
+
+// Scroll synchronization
+const syncScrolls = () => {
+  if (viewMode.value !== 'time') return
+  
+  nextTick(() => {
+    if (hourScroll.value) hourScroll.value.scrollTop = (selectedHour.value - 1) * ITEM_HEIGHT
+    if (minuteScroll.value) minuteScroll.value.scrollTop = selectedMinute.value * ITEM_HEIGHT
+    if (secondScroll.value) secondScroll.value.scrollTop = selectedSecond.value * ITEM_HEIGHT
+    if (periodScroll.value) periodScroll.value.scrollTop = (selectedPeriod.value === 'AM' ? 0 : 1) * ITEM_HEIGHT
+  })
+}
+
+watch(viewMode, (newVal) => {
+  if (newVal === 'time') {
+    syncScrolls()
+  }
+})
+
+
+const handleScroll = (type: 'hour' | 'minute' | 'second' | 'period', event: Event) => {
+  const target = event.target as HTMLElement
+  const index = Math.round(target.scrollTop / ITEM_HEIGHT)
+  
+  if (type === 'hour') {
+    const val = hours[index]
+    if (val !== undefined) selectedHour.value = val
+  } else if (type === 'minute') {
+    const val = minutes[index]
+    if (val !== undefined) selectedMinute.value = val
+  } else if (type === 'second') {
+    const val = seconds[index]
+    if (val !== undefined) selectedSecond.value = val
+  } else if (type === 'period') {
+    const val = periods[index]
+    if (val !== undefined) selectedPeriod.value = val
+  }
+}
 
 // Close on outside click
 const handleClickOutside = (event: MouseEvent) => {
@@ -101,9 +171,16 @@ const calendarDays = computed(() => {
 // Formatting for display
 const formattedSelection = computed(() => {
   if (!props.modelValue) return ''
-  const date = new Date(props.modelValue)
+  // Handle space-separated date and time
+  const [dateStr, timeStr] = props.modelValue.split(' ')
+  const date = new Date(dateStr)
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`
+  
+  let result = `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`
+  if (timeStr) {
+    result += ` ${timeStr}`
+  }
+  return result
 })
 
 // Check if a generated day object matches the selected date
@@ -123,15 +200,54 @@ const isToday = (dateObj: Date) => {
          dateObj.getFullYear() === today.getFullYear()
 }
 
+const isBeforeToday = (dateObj: Date) => {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const d = new Date(dateObj)
+  d.setHours(0, 0, 0, 0)
+  return d < today
+}
+
+const isPrevMonthDisabled = computed(() => {
+  const today = new Date()
+  return currentDate.value.getMonth() === today.getMonth() && 
+         currentDate.value.getFullYear() === today.getFullYear()
+})
+
 const selectDate = (day: any) => {
-  const d = day.date
-  // Format to YYYY-MM-DD (local time)
-  const formatted = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  if (isBeforeToday(day.date)) return
   
-  emit('update:modelValue', formatted)
+  const d = day.date
+  // Format to YYYY-MM-DD
+  const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  
+  // Keep existing time if any
+  const timeStr = props.modelValue.includes(' ') ? props.modelValue.split(' ')[1] : '06:28:55'
+  
+  emit('update:modelValue', `${dateStr} ${timeStr}`)
   // Ensure the view switches to the selected month if clicking a padded day
   currentDate.value = new Date(d.getFullYear(), d.getMonth(), 1)
+}
+
+const confirmDate = () => {
+  viewMode.value = 'time'
+}
+
+const confirmTime = () => {
+  // Convert 12h to 24h
+  let h = selectedHour.value
+  if (selectedPeriod.value === 'PM' && h < 12) h += 12
+  if (selectedPeriod.value === 'AM' && h === 12) h = 0
+  
+  const timeStr = `${String(h).padStart(2, '0')}:${String(selectedMinute.value).padStart(2, '0')}:${String(selectedSecond.value).padStart(2, '0')}`
+  const dateStr = props.modelValue.split(' ')[0]
+  
+  emit('update:modelValue', `${dateStr} ${timeStr}`)
   isOpen.value = false
+  // Reset for next open
+  setTimeout(() => {
+    viewMode.value = 'date'
+  }, 300)
 }
 </script>
 
@@ -155,64 +271,191 @@ const selectDate = (day: any) => {
     <!-- Popover Calendar -->
     <div 
       v-if="isOpen" 
-      class="absolute bottom-[64px] sm:bottom-auto sm:top-[64px] left-0 md:left-auto md:right-0 bg-white rounded-[24px] p-6 shadow-2xl w-full z-50 animate-fade-in custom-dropdown"
+      class="absolute bottom-[64px] sm:bottom-auto sm:top-[64px] left-0 md:left-auto md:right-0 bg-[#f9f9ff] rounded-[24px] p-6 shadow-2xl w-full z-50 animate-fade-in custom-dropdown border border-gray-100"
     >
-      <!-- Header -->
-      <div class="flex items-center justify-between mb-4">
-        <button @click="prevMonth" class="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-sm hover:shadow hover:bg-gray-50 transition-all text-[#1a1a1a]">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        
-        <div class="flex items-center gap-2">
-          <div class="bg-white rounded-[12px] px-3 py-1.5 shadow-sm font-bold text-[#1a1a1a] flex items-center gap-1 text-[17px]">
-            {{ currentMonthName }}
-            <svg class="w-3 h-3 text-[#8B2CF5]" viewBox="0 0 10 10" fill="currentColor">
-               <polygon points="0,10 10,10 10,0"/>
+      <!-- Date View -->
+      <template v-if="viewMode === 'date'">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6">
+          <button 
+            @click="!isPrevMonthDisabled && prevMonth()" 
+            class="w-12 h-12 rounded-full flex items-center justify-center bg-white shadow-sm transition-all"
+            :class="isPrevMonthDisabled ? 'opacity-30 cursor-not-allowed text-gray-400' : 'hover:shadow-md hover:bg-gray-50 text-[#1a1a1a]'"
+            :disabled="isPrevMonthDisabled"
+          >
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" />
             </svg>
+          </button>
+          
+          <div class="flex items-center gap-3">
+            <div class="bg-white rounded-[14px] px-5 py-2.5 shadow-sm font-black text-[#1a1a1a] flex items-center gap-2 text-[20px] relative">
+              {{ currentMonthName }}
+              <svg class="w-2.5 h-2.5 text-[#8B2CF5] absolute bottom-1.5 right-1.5" viewBox="0 0 10 10" fill="currentColor">
+                <polygon points="0,10 10,10 10,0"/>
+              </svg>
+            </div>
+            <div class="bg-white rounded-[14px] px-5 py-2.5 shadow-sm font-black text-[#1a1a1a] flex items-center gap-2 text-[20px] relative">
+              {{ currentYear }}
+              <svg class="w-2.5 h-2.5 text-[#8B2CF5] absolute bottom-1.5 right-1.5" viewBox="0 0 10 10" fill="currentColor">
+                <polygon points="0,10 10,10 10,0"/>
+              </svg>
+            </div>
           </div>
-          <div class="bg-white rounded-[12px] px-3 py-1.5 shadow-sm font-bold text-[#1a1a1a] flex items-center gap-1 text-[17px]">
-            {{ currentYear }}
-            <svg class="w-3 h-3 text-[#8B2CF5]" viewBox="0 0 10 10" fill="currentColor">
-               <polygon points="0,10 10,10 10,0"/>
+          
+          <button @click="nextMonth" class="w-12 h-12 rounded-full flex items-center justify-center bg-white shadow-sm hover:shadow-md hover:bg-gray-50 transition-all text-[#1a1a1a]">
+            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" />
             </svg>
+          </button>
+        </div>
+
+        <!-- Days of Week Header -->
+        <div class="grid grid-cols-7 gap-2 mb-3">
+          <div v-for="day in ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']" :key="day" class="text-center font-bold text-[#1a1a1a] text-[16px] h-8 flex items-center justify-center">
+            {{ day }}
           </div>
         </div>
-        
-        <button @click="nextMonth" class="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-sm hover:shadow hover:bg-gray-50 transition-all text-[#1a1a1a]">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
 
-      <!-- Days of Week Header (Mo, Tu, We...) -->
-      <div class="grid grid-cols-7 gap-1 mb-2">
-        <div v-for="day in ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']" :key="day" class="text-center font-bold text-[#1a1a1a] text-[15px] h-8 flex items-center justify-center">
-          {{ day }}
+        <!-- Calendar Grid -->
+        <div class="grid grid-cols-7 gap-2 mb-6">
+          <div 
+            v-for="(day, index) in calendarDays" 
+            :key="index"
+            class="h-12 w-12 mx-auto flex items-center justify-center text-[16px] transition-all duration-200 rounded-[12px]"
+            :class="[
+              isSelected(day.date) 
+                ? 'bg-[#8B2CF5] text-white font-black shadow-lg shadow-[#8B2CF5]/40 scale-105 z-10' 
+                : isBeforeToday(day.date)
+                  ? 'text-[#d1d5db] cursor-not-allowed opacity-60 bg-transparent'
+                  : 'bg-white shadow-sm font-bold text-[#1a1a1a] hover:bg-gray-50 hover:shadow-md cursor-pointer',
+              isToday(day.date) && !isSelected(day.date) ? 'border-[3px] border-[#8B2CF5] !text-[#8B2CF5]' : '',
+              !day.isCurrentMonth && !isSelected(day.date) && !isBeforeToday(day.date) ? '!text-[#9ca3af] !font-medium' : ''
+            ]"
+            @click="selectDate(day)"
+          >
+            {{ day.dayNumber }}
+          </div>
         </div>
-      </div>
 
-      <!-- Calendar Grid -->
-      <div class="grid grid-cols-7 gap-y-2 gap-x-1">
-        <div 
-          v-for="(day, index) in calendarDays" 
-          :key="index"
-          class="h-10 w-10 mx-auto flex items-center justify-center text-[15px] cursor-pointer transition-all duration-200"
-          :class="[
-            isSelected(day.date) 
-              ? 'bg-[#8B2CF5] text-white rounded-[10px] font-bold shadow-md shadow-[#8B2CF5]/30' 
-              : day.isCurrentMonth
-                ? 'text-[#1a1a1a] font-bold hover:bg-gray-200 rounded-[10px]'
-                : 'text-[#9ca3af] font-medium hover:bg-gray-100 rounded-[10px]',
-            isToday(day.date) && !isSelected(day.date) ? 'border-2 border-[#8B2CF5] text-[#8B2CF5]' : ''
-          ]"
-          @click="selectDate(day)"
+        <!-- Next Step Button -->
+        <button 
+          @click="confirmDate"
+          class="w-full h-14 bg-[#8B2CF5] text-white rounded-[20px] font-bold text-[18px] shadow-lg shadow-[#8B2CF5]/30 hover:opacity-90 active:scale-[0.98] transition-all"
         >
-          {{ day.dayNumber }}
+          下一步
+        </button>
+      </template>
+
+      <!-- Time View -->
+      <template v-else>
+        <div class="flex flex-col items-center py-4">
+          <!-- Wheel Picker Container -->
+          <div class="w-full relative h-[168px] flex items-center justify-center gap-4 mb-8">
+            <!-- Background highlight lines for center item -->
+            <div class="absolute top-[50%] -translate-y-[28px] left-0 right-0 h-[1px] bg-gray-200"></div>
+            <div class="absolute top-[50%] translate-y-[28px] left-0 right-0 h-[1px] bg-gray-200"></div>
+
+            <!-- Scrollable Wheels -->
+            <div class="flex items-center justify-center w-full h-full relative">
+              <!-- Hour Wheel -->
+              <div 
+                ref="hourScroll"
+                @scroll="handleScroll('hour', $event)"
+                class="h-full overflow-y-auto snap-y snap-mandatory scrollbar-hide w-16 text-center"
+              >
+                <div class="h-[56px]"></div> <!-- Top Padding -->
+                <div 
+                  v-for="h in hours" 
+                  :key="h" 
+                  class="h-[56px] flex items-center justify-center snap-center text-[22px] font-bold transition-all duration-200"
+                  :class="selectedHour === h ? 'text-[#1a1a1a] scale-110' : 'text-[#9ca3af]'"
+                >
+                  {{ String(h).padStart(2, '0') }}
+                </div>
+                <div class="h-[56px]"></div> <!-- Bottom Padding -->
+              </div>
+
+              <span class="text-[20px] font-bold text-[#1a1a1a] mb-0.5">:</span>
+
+              <!-- Minute Wheel -->
+              <div 
+                ref="minuteScroll"
+                @scroll="handleScroll('minute', $event)"
+                class="h-full overflow-y-auto snap-y snap-mandatory scrollbar-hide w-16 text-center"
+              >
+                <div class="h-[56px]"></div>
+                <div 
+                  v-for="m in minutes" 
+                  :key="m" 
+                  class="h-[56px] flex items-center justify-center snap-center text-[22px] font-bold transition-all duration-200"
+                  :class="selectedMinute === m ? 'text-[#1a1a1a] scale-110' : 'text-[#9ca3af]'"
+                >
+                  {{ String(m).padStart(2, '0') }}
+                </div>
+                <div class="h-[56px]"></div>
+              </div>
+
+              <span class="text-[20px] font-bold text-[#1a1a1a] mb-0.5">:</span>
+
+              <!-- Second Wheel -->
+              <div 
+                ref="secondScroll"
+                @scroll="handleScroll('second', $event)"
+                class="h-full overflow-y-auto snap-y snap-mandatory scrollbar-hide w-16 text-center"
+              >
+                <div class="h-[56px]"></div>
+                <div 
+                  v-for="s in seconds" 
+                  :key="s" 
+                  class="h-[56px] flex items-center justify-center snap-center text-[22px] font-bold transition-all duration-200"
+                  :class="selectedSecond === s ? 'text-[#1a1a1a] scale-110' : 'text-[#9ca3af]'"
+                >
+                  {{ String(s).padStart(2, '0') }}
+                </div>
+                <div class="h-[56px]"></div>
+              </div>
+
+              <!-- Period Wheel -->
+              <div 
+                ref="periodScroll"
+                @scroll="handleScroll('period', $event)"
+                class="h-full overflow-y-auto snap-y snap-mandatory scrollbar-hide w-20 text-center ml-2"
+              >
+                <div class="h-[56px]"></div>
+                <div 
+                  v-for="p in periods" 
+                  :key="p" 
+                  class="h-[56px] flex items-center justify-center snap-center text-[22px] font-bold transition-all duration-200"
+                  :class="selectedPeriod === p ? 'text-[#1a1a1a] scale-110' : 'text-[#9ca3af]'"
+                >
+                  {{ p }}
+                </div>
+                <div class="h-[56px]"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Back to Date Selection -->
+          <button 
+            @click="viewMode = 'date'"
+            class="mb-4 text-[#8B2CF5] font-bold text-[16px] hover:underline flex items-center gap-1 mt-2"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+            </svg>
+            返回日期选择
+          </button>
+
+          <!-- Confirm Selection Button -->
+          <button 
+            @click="confirmTime"
+            class="w-full h-14 bg-[#8B2CF5] text-white rounded-[20px] font-bold text-[18px] shadow-lg shadow-[#8B2CF5]/30 hover:opacity-90 active:scale-[0.98] transition-all"
+          >
+            确认选择
+          </button>
         </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
@@ -237,5 +480,14 @@ const selectDate = (day: any) => {
 /* Subtle border for the dropdown to pop from the white modal background */
 .custom-dropdown {
     border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 </style>
