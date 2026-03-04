@@ -16,10 +16,12 @@ interface SellingTicketProps {
 defineProps<{
   ticket: SellingTicketProps
 }>()
+
+const emit = defineEmits(['delist'])
 </script>
 
 <template>
-  <div class="rounded-[16px] md:rounded-[24px] p-4 md:p-6 bg-white md:bg-[#f9f5ff] transition-all duration-300 relative border border-transparent lg:hover:border-[#8b3dff] lg:hover:shadow-[0_8px_30px_rgba(139,61,255,0.12)]">
+  <div class="rounded-[16px] md:rounded-[24px] p-4 md:p-6 bg-white md:bg-[#8B2CF5]/5 transition-all duration-300 relative border border-transparent lg:hover:border-[#8B2CF5] lg:hover:shadow-[0_8px_30px_rgba(139,61,255,0.12)]">
     <!-- Top Row: Expiry Timer and Status Badge -->
     <div class="flex items-center justify-between mb-4">
       <div class="text-[#F0000F] text-[13px] md:text-[15px] font-medium leading-none">
@@ -42,8 +44,8 @@ defineProps<{
          <h3 class="text-[#2a2a2a] leading-[1.3] text-[15px] md:text-[18px] line-clamp-2 md:font-normal font-medium mb-1 md:mb-2">
            {{ ticket.title }}
          </h3>
-         <div class="inline-flex self-start px-[8px] py-[4px] md:px-3 md:py-0.5 border border-[#8b3dff] rounded-[8px] md:rounded-full">
-           <span class="text-[11px] md:text-[13px] text-[#8b3dff] leading-none">{{ ticket.type }}</span>
+         <div class="inline-flex self-start px-[8px] py-[4px] md:px-3 md:py-0.5 border border-[#8B2CF5] rounded-[8px] md:rounded-full">
+           <span class="text-[11px] md:text-[13px] text-[#8B2CF5] leading-none">{{ ticket.type }}</span>
          </div>
       </div>
     </div>
@@ -78,14 +80,14 @@ defineProps<{
         </div>
         <div class="flex items-center gap-1.5">
           <span class="text-[13px] md:text-[14px] text-[#999999]">预计到手价</span>
-          <span class="text-[14px] md:text-[15px] font-bold text-[#8b3dff] leading-none">
+          <span class="text-[14px] md:text-[15px] font-bold text-[#8B2CF5] leading-none">
             ${{ ticket.payout }}
           </span>
         </div>
       </div>
       
       <!-- Action Button -->
-      <button class="px-5 py-2 md:px-6 md:py-2.5 rounded-full bg-[#f4f5f8] md:bg-[#a855f7] md:hover:bg-[#9333ea] text-[#1a1a1a] md:text-white text-[14px] md:text-[15px] font-bold transition-all shadow-sm">
+      <button @click="emit('delist')" class="px-5 py-2 md:px-6 md:py-2.5 rounded-full bg-[#f4f5f8] md:bg-[#8B2CF5] md:hover:bg-[#9333ea] text-[#1a1a1a] md:text-white text-[14px] md:text-[15px] font-bold transition-all shadow-sm">
         下架商品
       </button>
     </div>

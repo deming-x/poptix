@@ -24,11 +24,11 @@ const handleResaleClick = () => {
 
 <template>
   <div 
-    class="rounded-[16px] md:rounded-[24px] p-4 md:p-6 transition-all duration-300 relative group cursor-pointer border"
+    class="rounded-[16px] md:rounded-[24px] p-4 md:p-6 transition-all duration-300 relative group cursor-pointer border-2"
     :class="[
       ticket.isActive 
-        ? 'border-[#8b3dff] shadow-[0_8px_30px_rgba(139,61,255,0.12)] bg-white md:bg-[#f9f5ff]' 
-        : 'border-transparent bg-white md:bg-[#f9f5ff] hover:border-[#8b3dff] hover:shadow-[0_8px_30px_rgba(139,61,255,0.12)]'
+        ? 'border-[#8B2CF5] shadow-[0_8px_30px_rgba(139,61,255,0.12)] bg-white md:bg-[#8B2CF5]/5' 
+        : 'border-transparent bg-white md:bg-[#8B2CF5]/5 hover:border-[#8B2CF5] hover:shadow-[0_8px_30px_rgba(139,61,255,0.12)]'
     ]"
   >
     <!-- Top Row: Image & Title/Tag -->
@@ -43,8 +43,8 @@ const handleResaleClick = () => {
          <h3 class="text-[#2a2a2a] leading-[1.3] text-[15px] md:text-[18px] line-clamp-2 md:font-normal font-medium mb-1 md:mb-2">
            {{ ticket.title }}
          </h3>
-         <div class="inline-flex self-start px-[8px] py-[4px] md:px-3 md:py-0.5 border border-[#8b3dff] rounded-[8px] md:rounded-full">
-           <span class="text-[11px] md:text-[13px] text-[#8b3dff] leading-none">{{ ticket.type }}</span>
+         <div class="inline-flex self-start px-[8px] py-[4px] md:px-3 md:py-0.5 border border-[#8B2CF5] rounded-[8px] md:rounded-full">
+           <span class="text-[11px] md:text-[13px] text-[#8B2CF5] leading-none">{{ ticket.type }}</span>
          </div>
       </div>
     </div>
@@ -80,7 +80,7 @@ const handleResaleClick = () => {
       <!-- Action Button -->
       <button 
         @click.stop="handleResaleClick"
-        class="px-5 py-2 md:px-7 md:py-2.5 rounded-full bg-[#8b3dff] hover:bg-[#7a2ce0] text-white flex items-center justify-center transition-colors shadow-sm"
+        class="px-5 py-2 md:px-7 md:py-2.5 rounded-full bg-[#8B2CF5] hover:bg-[#8B2CF5] text-white flex items-center justify-center transition-colors shadow-sm"
       >
         <span class="text-[14px] md:text-[16px] font-medium leading-none">去挂售</span>
       </button>

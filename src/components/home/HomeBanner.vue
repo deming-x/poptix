@@ -44,7 +44,7 @@ const banners = [
           v-for="i in 5" 
           :key="i"
           class="h-1.5 rounded-full transition-all duration-300"
-          :class="[i === 2 ? 'w-6 bg-[#8b3dff]' : 'w-4 bg-white/40 hover:bg-white/60 cursor-pointer']"
+          :class="[i === 2 ? 'w-6 bg-[#8B2CF5]' : 'w-4 bg-white/40 hover:bg-white/60 cursor-pointer']"
         ></div>
       </div>
     </div>

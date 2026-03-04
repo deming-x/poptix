@@ -62,10 +62,10 @@ const menuItems = [
         <!-- Logo -->
         <div class="flex items-center">
           <router-link to="/" class="flex items-center space-x-2">
-            <div class="w-10 h-10 bg-gradient-to-br from-[#d946ef] to-[#7c3aed] rounded-xl flex items-center justify-center shadow-sm">
+            <div class="w-10 h-10 bg-gradient-to-br from-[#8B2CF5] to-[#8B2CF5] rounded-xl flex items-center justify-center shadow-sm">
               <span class="text-white text-2xl font-black italic">P</span>
             </div>
-            <span class="text-2xl font-black tracking-tight text-[#c026d3]">
+            <span class="text-2xl font-black tracking-tight text-[#8B2CF5]">
               POPTIX
             </span>
           </router-link>
@@ -83,7 +83,7 @@ const menuItems = [
               </div>
               <input
                 type="text"
-                class="block w-full bg-[#f6f7f9] border-transparent rounded-full py-2.5 pl-11 pr-4 text-sm placeholder-gray-400/60 focus:outline-none focus:ring-2 focus:ring-[#8b3dff]/20 focus:bg-white transition-all duration-200"
+                class="block w-full bg-[#f6f7f9] border-transparent rounded-full py-2.5 pl-11 pr-4 text-sm placeholder-gray-400/60 focus:outline-none focus:ring-2 focus:ring-[#8B2CF5]/20 focus:bg-white transition-all duration-200"
                 placeholder="| 搜索更多活动/演出/音乐会"
               />
             </div>
@@ -107,7 +107,7 @@ const menuItems = [
             <!-- Logged In State -->
             <div v-if="isLoggedIn" class="relative" ref="profileRef">
               <div @click="toggleProfile" class="flex items-center space-x-3 cursor-pointer group px-1">
-                <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-transparent group-hover:border-[#8b3dff]/20 transition-all duration-200">
+                <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-transparent group-hover:border-[#8B2CF5]/20 transition-all duration-200">
                   <img 
                     src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format&fit=crop" 
                     alt="Jay Chou"
@@ -140,7 +140,7 @@ const menuItems = [
                 <!-- Menu Items -->
                 <div class="space-y-2 mb-8">
                   <!-- Profile Button (Gradient) -->
-                  <button class="w-full flex items-center justify-between bg-gradient-to-r from-[#b34af1] to-[#f11a8a] text-white p-4 rounded-[20px] shadow-lg shadow-purple-100 hover:scale-[1.02] transition-all duration-200 group/btn">
+                  <button class="w-full flex items-center justify-between bg-gradient-to-r from-[#8B2CF5] to-[#f11a8a] text-white p-4 rounded-[20px] shadow-lg shadow-[#8B2CF5]/10 hover:scale-[1.02] transition-all duration-200 group/btn">
                     <div class="flex items-center space-x-3">
                       <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -180,7 +180,7 @@ const menuItems = [
             <button 
               v-else
               @click="handleLogin"
-              class="bg-[#8b3dff] hover:bg-[#7c3aed] text-white px-8 py-2.5 rounded-full text-sm font-semibold shadow-lg shadow-purple-200 transition-all duration-200 active:scale-95 whitespace-nowrap"
+              class="bg-[#8B2CF5] hover:bg-[#8B2CF5] text-white px-8 py-2.5 rounded-full text-sm font-semibold shadow-lg shadow-[#8B2CF5]/20 transition-all duration-200 active:scale-95 whitespace-nowrap"
             >
               Sign In
             </button>
@@ -190,7 +190,7 @@ const menuItems = [
           <div class="flex items-center md:hidden">
             <button
               @click="toggleMobileMenu"
-              class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#8b3dff]"
+              class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#8B2CF5]"
             >
               <span class="sr-only">Open main menu</span>
               <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -227,10 +227,10 @@ const menuItems = [
         <div v-if="isMobileMenuOpen" class="fixed inset-y-0 left-0 w-[280px] bg-white z-[100] md:hidden shadow-2xl flex flex-col">
           <!-- Sidebar Header (Logo) -->
           <div class="px-6 pt-10 pb-8 flex items-center space-x-3">
-            <div class="w-10 h-10 bg-gradient-to-br from-[#d946ef] to-[#7c3aed] rounded-xl flex items-center justify-center shadow-sm shrink-0">
+            <div class="w-10 h-10 bg-gradient-to-br from-[#8B2CF5] to-[#8B2CF5] rounded-xl flex items-center justify-center shadow-sm shrink-0">
               <span class="text-white text-2xl font-black italic">P</span>
             </div>
-            <span class="text-2xl font-black tracking-tight text-[#c026d3]">
+            <span class="text-2xl font-black tracking-tight text-[#8B2CF5]">
               POPTIX
             </span>
           </div>
@@ -240,7 +240,7 @@ const menuItems = [
             <router-link
               to="/"
               @click="isMobileMenuOpen = false"
-              class="flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-[16px] font-medium bg-[#f3e8ff] text-[#8b3dff]"
+              class="flex items-center space-x-3 px-4 py-3.5 rounded-2xl text-[16px] font-medium bg-[#8B2CF5]/10 text-[#8B2CF5]"
             >
               <svg class="h-[22px] w-[22px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />

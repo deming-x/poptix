@@ -67,7 +67,7 @@ const navGroups = [
                         class="block px-4 py-3 rounded-xl text-[15px] font-medium transition-colors"
                         :class="[
                           route.path.startsWith(item.path)
-                            ? 'bg-[#f3e8ff] text-[#8b3dff]'
+                            ? 'bg-[#8B2CF5]/10 text-[#8B2CF5]'
                             : 'text-gray-600 hover:bg-gray-50'
                         ]"
                       >

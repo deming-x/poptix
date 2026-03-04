@@ -2,12 +2,13 @@
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 
 const props = defineProps<{
-  modelValue: string // Expected format YYYY-MM-DD HH:mm:ss, or empty
+  modelValue: string, // Expected format YYYY-MM-DD HH:mm:ss, or empty
+  standalone?: boolean
 }>()
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'confirm'])
 
-const isOpen = ref(false)
+const isOpen = ref(props.standalone || false)
 const popoverRef = ref<HTMLElement | null>(null)
 const viewMode = ref<'date' | 'time'>('date')
 
@@ -208,6 +209,27 @@ const isBeforeToday = (dateObj: Date) => {
   return d < today
 }
 
+const isSelectionFuture = computed(() => {
+  if (!props.modelValue) return false
+  const selected = new Date(props.modelValue.split(' ')[0])
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  selected.setHours(0, 0, 0, 0)
+  return selected > today
+})
+
+const isInRange = (dateObj: Date) => {
+  if (!isSelectionFuture.value) return false
+  const selected = new Date(props.modelValue.split(' ')[0])
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  selected.setHours(0, 0, 0, 0)
+  const d = new Date(dateObj)
+  d.setHours(0, 0, 0, 0)
+
+  return d > today && d < selected
+}
+
 const isPrevMonthDisabled = computed(() => {
   const today = new Date()
   return currentDate.value.getMonth() === today.getMonth() && 
@@ -243,6 +265,7 @@ const confirmTime = () => {
   const dateStr = props.modelValue.split(' ')[0]
   
   emit('update:modelValue', `${dateStr} ${timeStr}`)
+  emit('confirm')
   isOpen.value = false
   // Reset for next open
   setTimeout(() => {
@@ -253,12 +276,13 @@ const confirmTime = () => {
 
 <template>
   <div class="relative w-full" ref="popoverRef">
-    <!-- Trigger Button -->
+    <!-- Trigger Button (only if not standalone) -->
     <button 
+      v-if="!standalone"
       type="button"
       @click="isOpen = !isOpen"
       class="bg-[#f4f5f8] rounded-2xl flex items-center justify-between px-4 h-[56px] w-full text-[16px] outline-none border transition-colors relative"
-      :class="isOpen ? 'border-[#8b3dff] bg-white' : 'border-transparent text-[#9ca3af] hover:bg-[#eef0f3]'"
+      :class="isOpen ? 'border-[#8B2CF5] bg-white' : 'border-transparent text-[#9ca3af] hover:bg-[#eef0f3]'"
     >
       <span v-if="formattedSelection" class="text-[#1a1a1a] font-medium">{{ formattedSelection }}</span>
       <span v-else class="text-[#9ca3af]">Select Date</span>
@@ -268,10 +292,14 @@ const confirmTime = () => {
       </svg>
     </button>
 
-    <!-- Popover Calendar -->
+    <!-- Popover / Inline Picker -->
     <div 
-      v-if="isOpen" 
-      class="absolute bottom-[64px] sm:bottom-auto sm:top-[64px] left-0 md:left-auto md:right-0 bg-[#f9f9ff] rounded-[24px] p-6 shadow-2xl w-full z-50 animate-fade-in custom-dropdown border border-gray-100"
+      v-if="isOpen || standalone" 
+      :class="[
+        standalone 
+          ? 'w-full bg-[#F9F5FF] rounded-[24px] p-0' 
+          : 'absolute bottom-[64px] sm:bottom-auto sm:top-[64px] left-0 md:left-auto md:right-0 bg-[#F9F5FF] rounded-[24px] p-6 shadow-2xl w-full z-50 animate-fade-in custom-dropdown border border-gray-100'
+      ]"
     >
       <!-- Date View -->
       <template v-if="viewMode === 'date'">
@@ -289,13 +317,13 @@ const confirmTime = () => {
           </button>
           
           <div class="flex items-center gap-3">
-            <div class="bg-white rounded-[14px] px-5 py-2.5 shadow-sm font-black text-[#1a1a1a] flex items-center gap-2 text-[20px] relative">
+            <div class="bg-transparent rounded-[14px] px-5 py-2.5 font-black text-[#1a1a1a] flex items-center gap-2 text-[20px] relative">
               {{ currentMonthName }}
               <svg class="w-2.5 h-2.5 text-[#8B2CF5] absolute bottom-1.5 right-1.5" viewBox="0 0 10 10" fill="currentColor">
                 <polygon points="0,10 10,10 10,0"/>
               </svg>
             </div>
-            <div class="bg-white rounded-[14px] px-5 py-2.5 shadow-sm font-black text-[#1a1a1a] flex items-center gap-2 text-[20px] relative">
+            <div class="bg-transparent rounded-[14px] px-5 py-2.5 font-black text-[#1a1a1a] flex items-center gap-2 text-[20px] relative">
               {{ currentYear }}
               <svg class="w-2.5 h-2.5 text-[#8B2CF5] absolute bottom-1.5 right-1.5" viewBox="0 0 10 10" fill="currentColor">
                 <polygon points="0,10 10,10 10,0"/>
@@ -318,23 +346,47 @@ const confirmTime = () => {
         </div>
 
         <!-- Calendar Grid -->
-        <div class="grid grid-cols-7 gap-2 mb-6">
+        <div class="grid grid-cols-7 gap-y-2 gap-x-0 mb-6 relative">
           <div 
             v-for="(day, index) in calendarDays" 
             :key="index"
-            class="h-12 w-12 mx-auto flex items-center justify-center text-[16px] transition-all duration-200 rounded-[12px]"
+            class="h-12 relative flex items-center justify-center transition-all duration-200"
             :class="[
-              isSelected(day.date) 
-                ? 'bg-[#8B2CF5] text-white font-black shadow-lg shadow-[#8B2CF5]/40 scale-105 z-10' 
-                : isBeforeToday(day.date)
-                  ? 'text-[#d1d5db] cursor-not-allowed opacity-60 bg-transparent'
-                  : 'bg-white shadow-sm font-bold text-[#1a1a1a] hover:bg-gray-50 hover:shadow-md cursor-pointer',
-              isToday(day.date) && !isSelected(day.date) ? 'border-[3px] border-[#8B2CF5] !text-[#8B2CF5]' : '',
-              !day.isCurrentMonth && !isSelected(day.date) && !isBeforeToday(day.date) ? '!text-[#9ca3af] !font-medium' : ''
+              isInRange(day.date) ? 'bg-[#8B2CF5]/10' : '',
+              isToday(day.date) && isSelectionFuture ? 'bg-[#8B2CF5]/10 rounded-l-[12px]' : '',
+              isSelected(day.date) && isSelectionFuture ? 'bg-[#8B2CF5]/10 rounded-r-[12px]' : '',
+              // Handle row boundaries for continuous feeling
+              isInRange(day.date) && (index % 7 === 0) ? 'rounded-l-[12px]' : '',
+              isInRange(day.date) && (index % 7 === 6) ? 'rounded-r-[12px]' : '',
             ]"
-            @click="selectDate(day)"
           >
-            {{ day.dayNumber }}
+            <!-- Day Cell Background/Button -->
+            <div 
+              class="h-full w-full flex items-center justify-center text-[16px] transition-all duration-200"
+              :class="[
+                // Boundary States (Solid Purple)
+                (isSelected(day.date) && isSelectionFuture) || (isToday(day.date) && isSelectionFuture)
+                  ? 'bg-[#8B2CF5] text-white font-black shadow-lg shadow-[#8B2CF5]/40 rounded-[12px] scale-105 z-10' 
+                  : '',
+                // Initial State (Outline Purple for Today)
+                isToday(day.date) && !isSelectionFuture
+                  ? 'border-[2px] border-[#8B2CF5] text-[#8B2CF5] font-black rounded-[12px] z-10 mx-1'
+                  : '',
+                // Normal States
+                !isToday(day.date) && !isSelected(day.date) && !isInRange(day.date)
+                  ? (isBeforeToday(day.date)
+                    ? 'text-[#d1d5db] cursor-not-allowed opacity-60 bg-transparent'
+                    : 'bg-transparent font-bold text-[#1a1a1a] hover:bg-[#8B2CF5]/10 hover:text-[#8B2CF5] cursor-pointer rounded-[12px] mx-1')
+                  : '',
+                // Range State (Text only)
+                isInRange(day.date) ? 'text-[#8B2CF5] font-bold' : '',
+                // Padded days styling
+                !day.isCurrentMonth && !isSelected(day.date) && !isToday(day.date) && !isInRange(day.date) && !isBeforeToday(day.date) ? '!text-[#9ca3af] !font-medium' : ''
+              ]"
+              @click="selectDate(day)"
+            >
+              {{ day.dayNumber }}
+            </div>
           </div>
         </div>
 
@@ -349,12 +401,26 @@ const confirmTime = () => {
 
       <!-- Time View -->
       <template v-else>
-        <div class="flex flex-col items-center py-4">
+        <div class="flex flex-col items-center w-full pt-2">
+          <!-- Back to Date Selection (Top Left) -->
+          <div class="w-full flex justify-start mb-5 -ml-1">
+            <button 
+              @click="viewMode = 'date'"
+              class="text-[#8B2CF5] font-bold text-[16px] hover:underline flex items-center gap-1"
+            >
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+              </svg>
+              返回日期选择
+            </button>
+          </div>
+
           <!-- Wheel Picker Container -->
-          <div class="w-full relative h-[168px] flex items-center justify-center gap-4 mb-8">
+          <div class="w-full relative h-[180px] flex items-center justify-center gap-4 mb-8 bg-[#F9F5FF] rounded-2xl px-2">
             <!-- Background highlight lines for center item -->
-            <div class="absolute top-[50%] -translate-y-[28px] left-0 right-0 h-[1px] bg-gray-200"></div>
-            <div class="absolute top-[50%] translate-y-[28px] left-0 right-0 h-[1px] bg-gray-200"></div>
+            <div class="absolute top-[50%] -translate-y-[28px] left-3 right-3 h-[56px] bg-[#8B2CF5]/5 rounded-none -z-0"></div>
+            <div class="absolute top-[50%] -translate-y-[28px] left-3 right-3 h-[1px] bg-[#8B2CF5]/10"></div>
+            <div class="absolute top-[50%] translate-y-[28px] left-3 right-3 h-[1px] bg-[#8B2CF5]/10"></div>
 
             <!-- Scrollable Wheels -->
             <div class="flex items-center justify-center w-full h-full relative">
@@ -364,16 +430,16 @@ const confirmTime = () => {
                 @scroll="handleScroll('hour', $event)"
                 class="h-full overflow-y-auto snap-y snap-mandatory scrollbar-hide w-16 text-center"
               >
-                <div class="h-[56px]"></div> <!-- Top Padding -->
+                <div class="h-[62px]"></div> <!-- Top Padding to center the first item -->
                 <div 
                   v-for="h in hours" 
                   :key="h" 
                   class="h-[56px] flex items-center justify-center snap-center text-[22px] font-bold transition-all duration-200"
-                  :class="selectedHour === h ? 'text-[#1a1a1a] scale-110' : 'text-[#9ca3af]'"
+                  :class="selectedHour === h ? 'text-[#8B2CF5] scale-110' : 'text-[#9ca3af] opacity-50'"
                 >
                   {{ String(h).padStart(2, '0') }}
                 </div>
-                <div class="h-[56px]"></div> <!-- Bottom Padding -->
+                <div class="h-[62px]"></div> <!-- Bottom Padding -->
               </div>
 
               <span class="text-[20px] font-bold text-[#1a1a1a] mb-0.5">:</span>
@@ -384,16 +450,16 @@ const confirmTime = () => {
                 @scroll="handleScroll('minute', $event)"
                 class="h-full overflow-y-auto snap-y snap-mandatory scrollbar-hide w-16 text-center"
               >
-                <div class="h-[56px]"></div>
+                <div class="h-[62px]"></div>
                 <div 
                   v-for="m in minutes" 
                   :key="m" 
                   class="h-[56px] flex items-center justify-center snap-center text-[22px] font-bold transition-all duration-200"
-                  :class="selectedMinute === m ? 'text-[#1a1a1a] scale-110' : 'text-[#9ca3af]'"
+                  :class="selectedMinute === m ? 'text-[#8B2CF5] scale-110' : 'text-[#9ca3af] opacity-50'"
                 >
                   {{ String(m).padStart(2, '0') }}
                 </div>
-                <div class="h-[56px]"></div>
+                <div class="h-[62px]"></div>
               </div>
 
               <span class="text-[20px] font-bold text-[#1a1a1a] mb-0.5">:</span>
@@ -404,16 +470,16 @@ const confirmTime = () => {
                 @scroll="handleScroll('second', $event)"
                 class="h-full overflow-y-auto snap-y snap-mandatory scrollbar-hide w-16 text-center"
               >
-                <div class="h-[56px]"></div>
+                <div class="h-[62px]"></div>
                 <div 
                   v-for="s in seconds" 
                   :key="s" 
                   class="h-[56px] flex items-center justify-center snap-center text-[22px] font-bold transition-all duration-200"
-                  :class="selectedSecond === s ? 'text-[#1a1a1a] scale-110' : 'text-[#9ca3af]'"
+                  :class="selectedSecond === s ? 'text-[#8B2CF5] scale-110' : 'text-[#9ca3af] opacity-50'"
                 >
                   {{ String(s).padStart(2, '0') }}
                 </div>
-                <div class="h-[56px]"></div>
+                <div class="h-[62px]"></div>
               </div>
 
               <!-- Period Wheel -->
@@ -422,30 +488,19 @@ const confirmTime = () => {
                 @scroll="handleScroll('period', $event)"
                 class="h-full overflow-y-auto snap-y snap-mandatory scrollbar-hide w-20 text-center ml-2"
               >
-                <div class="h-[56px]"></div>
+                <div class="h-[62px]"></div>
                 <div 
                   v-for="p in periods" 
                   :key="p" 
                   class="h-[56px] flex items-center justify-center snap-center text-[22px] font-bold transition-all duration-200"
-                  :class="selectedPeriod === p ? 'text-[#1a1a1a] scale-110' : 'text-[#9ca3af]'"
+                  :class="selectedPeriod === p ? 'text-[#8B2CF5] scale-110' : 'text-[#9ca3af] opacity-50'"
                 >
                   {{ p }}
                 </div>
-                <div class="h-[56px]"></div>
+                <div class="h-[62px]"></div>
               </div>
             </div>
           </div>
-
-          <!-- Back to Date Selection -->
-          <button 
-            @click="viewMode = 'date'"
-            class="mb-4 text-[#8B2CF5] font-bold text-[16px] hover:underline flex items-center gap-1 mt-2"
-          >
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
-            </svg>
-            返回日期选择
-          </button>
 
           <!-- Confirm Selection Button -->
           <button 
