@@ -87,14 +87,14 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center">
+  <div v-if="isOpen" class="fixed inset-0 z-50 flex items-end md:items-center justify-center">
     <!-- Overlay -->
     <div class="absolute inset-0 bg-black/40 transition-opacity" @click="handleClose"></div>
     
     <!-- Main Modal -->
     <div 
       v-show="!showAgreement"
-      class="relative rounded-[24px] w-[320px] md:w-[480px] p-6 shadow-xl transition-all duration-300 flex flex-col slide-up"
+      class="relative w-full md:w-[480px] rounded-t-[24px] rounded-b-none md:rounded-[24px] p-6 shadow-xl transition-all duration-300 flex flex-col slide-up-mobile md:slide-up"
       :class="currentView === 'date' ? 'bg-[#F9F5FF]' : 'bg-white'"
     >
       <!-- Main Form View -->
@@ -224,6 +224,21 @@ const handleSubmit = () => {
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+.slide-up-mobile {
+  animation: slideUpMobile 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUpMobile {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
