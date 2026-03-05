@@ -46,11 +46,6 @@ watch(() => props.isOpen, (newVal) => {
   }
 })
 
-const maxPrice = computed(() => {
-  if (!props.ticket || !props.ticket.price) return 0
-  return Number(props.ticket.price) * 1.2
-})
-
 const serviceFee = computed(() => {
   const price = Number(resalePrice.value) || 0
   return (price * 0.05).toFixed(2)
@@ -63,7 +58,7 @@ const payout = computed(() => {
 
 const isPriceValid = computed(() => {
   const price = Number(resalePrice.value)
-  return price > 0 && price <= maxPrice.value
+  return price > 0
 })
 
 const handleClose = () => {
@@ -76,7 +71,7 @@ const handleSubmit = () => {
     return
   }
   if (!isPriceValid.value) {
-    showToast('请输入有效的转售价格，不可超过原价120%')
+    showToast('请输入有效的转售价格')
     return
   }
   if (!endTime.value) {
@@ -121,7 +116,7 @@ const handleSubmit = () => {
 
         <!-- Resale Price Input -->
         <div class="text-[15px] text-[#4b5563] mb-4">
-          请输入您的转售价（最高不可超过原价120%）
+          请输入您的转售价
         </div>
         <div class="bg-[#f4f5f8] rounded-2xl flex items-center px-4 h-[56px] w-full border border-transparent transition-colors focus-within:border-[#8B2CF5] focus-within:bg-white" :class="{'border-red-500': resalePrice && !isPriceValid}">
           <span class="text-[20px] text-[#1a1a1a] mr-2 flex justify-center w-5">¥</span>

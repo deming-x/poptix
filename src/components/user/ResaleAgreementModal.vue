@@ -50,13 +50,6 @@ const handleAgree = () => {
 
         <div class="space-y-2">
           <p class="text-[15px] leading-relaxed text-[#4b5563]">
-            <span class="text-[#8B2CF5] font-bold mr-1">价格限制：</span>
-            为抵制黄牛炒票，平台限制最高转售价不得超过票面原价的120%。
-          </p>
-        </div>
-
-        <div class="space-y-2">
-          <p class="text-[15px] leading-relaxed text-[#4b5563]">
             <span class="text-[#8B2CF5] font-bold mr-1">违约责任：</span>
             卖家单方面取消订单、虚假发货或因自身原因导致交易失败，平台将扣除卖家保证金，并永久限制卖家账户功能。
           </p>
