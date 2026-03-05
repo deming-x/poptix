@@ -21,7 +21,7 @@ const handleAgree = () => {
     <div class="absolute inset-0 bg-black/40 transition-opacity" @click="handleClose"></div>
     
     <!-- Modal -->
-    <div class="relative bg-white rounded-[24px] w-[480px] p-6 shadow-2xl transform transition-all flex flex-col slide-up overflow-hidden">
+    <div class="relative bg-white rounded-[24px] w-[320px] md:w-[480px] p-6 shadow-2xl transform transition-all flex flex-col slide-up overflow-hidden">
       <!-- Header -->
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-[24px] font-bold text-[#1a1a1a]">平台转售履约协议</h2>

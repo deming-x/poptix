@@ -99,7 +99,7 @@ const handleSubmit = () => {
     <!-- Main Modal -->
     <div 
       v-show="!showAgreement"
-      class="relative rounded-[24px] w-[480px] p-6 shadow-xl transition-all duration-300 flex flex-col slide-up"
+      class="relative rounded-[24px] w-[320px] md:w-[480px] p-6 shadow-xl transition-all duration-300 flex flex-col slide-up"
       :class="currentView === 'date' ? 'bg-[#F9F5FF]' : 'bg-white'"
     >
       <!-- Main Form View -->
