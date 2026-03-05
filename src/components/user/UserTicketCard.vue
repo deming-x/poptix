@@ -80,9 +80,9 @@ const handleResaleClick = () => {
       <!-- Action Button -->
       <button 
         @click.stop="handleResaleClick"
-        class="px-5 py-2 md:px-7 md:py-2.5 rounded-full bg-[#8B2CF5] hover:bg-[#8B2CF5] text-white flex items-center justify-center transition-colors shadow-sm"
+        class="px-3 py-1 md:px-7 md:py-2.5 rounded-full bg-[#8B2CF5] hover:bg-[#8B2CF5] text-white flex items-center justify-center transition-colors shadow-sm text-[14px] md:text-[16px] font-medium"
       >
-        <span class="text-[14px] md:text-[16px] font-medium leading-none">去挂售</span>
+        去挂售
       </button>
     </div>
   </div>

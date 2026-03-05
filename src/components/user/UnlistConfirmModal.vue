@@ -22,26 +22,26 @@ const handleConfirm = () => {
       <div class="absolute inset-0 bg-black/40" @click="handleClose"></div>
       
       <!-- Modal Content -->
-      <div class="relative bg-white rounded-[24px] w-full max-w-[480px] pt-16 pb-8 px-8 shadow-2xl flex flex-col items-center animate-modal-up">
+      <div class="relative bg-white rounded-[24px] w-[320px] pt-12 pb-4 px-4 md:w-full md:max-w-[480px] md:pt-16 md:pb-8 md:px-8 shadow-2xl flex flex-col items-center animate-modal-up">
         <!-- Icon Section -->
-        <div class="flex items-center gap-3 mb-16 w-full justify-center">
-          <div class="w-8 h-8 rounded-full bg-[#FF3D57] flex items-center justify-center shrink-0">
-            <span class="text-white text-[18px] font-bold">!</span>
+        <div class="flex items-center gap-3 mb-12 md:mb-16 w-full justify-center">
+          <div class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-[#FF3D57] flex items-center justify-center shrink-0">
+            <span class="text-white text-[14px] md:text-[18px] font-bold">!</span>
           </div>
-          <h2 class="text-[20px] font-bold text-[#FF3D57]">你确认要下架商品吗？</h2>
+          <h2 class="text-[16px] md:text-[20px] font-bold text-[#FF3D57]">你确认要下架商品吗？</h2>
         </div>
 
         <!-- Buttons Section -->
         <div class="flex gap-4 w-full">
           <button 
             @click="handleConfirm"
-            class="flex-1 h-[56px] rounded-[16px] border border-[#E5E7EB] bg-white text-[#999999] text-[18px] font-medium transition-colors hover:bg-gray-50"
+            class="flex-1 h-[48px] md:h-[56px] rounded-[16px] border border-[#E5E7EB] bg-white text-[#999999] text-[16px] md:text-[18px] font-medium transition-colors hover:bg-gray-50"
           >
             确认下架
           </button>
           <button 
             @click="handleClose"
-            class="flex-1 h-[56px] rounded-[16px] bg-[#8B2CF5] text-white text-[18px] font-medium transition-opacity hover:opacity-90 shadow-lg shadow-[#8B2CF5]/30"
+            class="flex-1 h-[48px] md:h-[56px] rounded-[16px] bg-[#8B2CF5] text-white text-[16px] md:text-[18px] font-medium transition-opacity hover:opacity-90 shadow-lg shadow-[#8B2CF5]/30"
           >
             再考虑一下
           </button>

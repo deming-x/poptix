@@ -162,7 +162,7 @@ watch(() => props.ticket.expiryTime, () => {
       </div>
       
       <!-- Action Button -->
-      <button @click="emit('delist')" class="px-5 py-2 md:px-7 md:py-2.5 rounded-full bg-[#f4f5f8] md:bg-[#8B2CF5] md:hover:bg-[#9333ea] text-[#1a1a1a] md:text-white text-[14px] md:text-[16px] font-medium transition-all shadow-sm">
+      <button @click="emit('delist')" class="px-3 py-1 md:px-7 md:py-2.5 rounded-full bg-[#f4f5f8] md:bg-[#8B2CF5] md:hover:bg-[#9333ea] text-[#1a1a1a] md:text-white text-[14px] md:text-[16px] font-medium transition-all shadow-sm flex items-center justify-center">
         下架商品
       </button>
     </div>
