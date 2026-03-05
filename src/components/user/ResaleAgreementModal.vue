@@ -60,7 +60,7 @@ const handleAgree = () => {
       <div class="mt-8">
         <button 
           @click="handleAgree"
-          class="w-full bg-[#8B2CF5] hover:bg-[#7a25d9] text-white rounded-[20px] h-[56px] text-[18px] font-bold transition-all shadow-[0_8px_20px_rgba(139,44,245,0.2)]"
+          class="w-full bg-[#8B2CF5] hover:bg-[#7a25d9] text-white rounded-[20px] h-[48px] md:h-[56px] text-[18px] font-bold transition-all shadow-[0_8px_20px_rgba(139,44,245,0.2)]"
         >
           我已阅读并同意
         </button>

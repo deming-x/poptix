@@ -281,7 +281,7 @@ const confirmTime = () => {
       v-if="!standalone"
       type="button"
       @click="isOpen = !isOpen"
-      class="bg-[#f4f5f8] rounded-2xl flex items-center justify-between px-4 h-[56px] w-full text-[16px] outline-none border transition-colors relative"
+      class="bg-[#f4f5f8] rounded-2xl flex items-center justify-between px-4 h-[48px] md:h-[56px] w-full text-[16px] outline-none border transition-colors relative"
       :class="isOpen ? 'border-[#8B2CF5] bg-white' : 'border-transparent text-[#9ca3af] hover:bg-[#eef0f3]'"
     >
       <span v-if="formattedSelection" class="text-[#1a1a1a] font-medium">{{ formattedSelection }}</span>
@@ -317,13 +317,13 @@ const confirmTime = () => {
           </button>
           
           <div class="flex items-center gap-3">
-            <div class="bg-white rounded-[14px] px-5 py-2.5 font-black text-[#1a1a1a] flex items-center gap-2 text-[20px] relative shadow-sm">
+            <div class="bg-white rounded-[14px] px-4 md:px-5 py-2 md:py-2.5 font-black text-[#1a1a1a] flex items-center gap-2 text-[18px] md:text-[20px] relative shadow-sm">
               {{ currentMonthName }}
               <svg class="w-2.5 h-2.5 text-[#8B2CF5] absolute bottom-1.5 right-1.5" viewBox="0 0 10 10" fill="currentColor">
                 <polygon points="0,10 10,10 10,0"/>
               </svg>
             </div>
-            <div class="bg-white rounded-[14px] px-5 py-2.5 font-black text-[#1a1a1a] flex items-center gap-2 text-[20px] relative shadow-sm">
+            <div class="bg-white rounded-[14px] px-4 md:px-5 py-2 md:py-2.5 font-black text-[#1a1a1a] flex items-center gap-2 text-[18px] md:text-[20px] relative shadow-sm">
               {{ currentYear }}
               <svg class="w-2.5 h-2.5 text-[#8B2CF5] absolute bottom-1.5 right-1.5" viewBox="0 0 10 10" fill="currentColor">
                 <polygon points="0,10 10,10 10,0"/>
@@ -340,43 +340,43 @@ const confirmTime = () => {
 
         <!-- Days of Week Header -->
         <div class="grid grid-cols-7 gap-2 mb-3">
-          <div v-for="day in ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']" :key="day" class="text-center font-bold text-[#1a1a1a] text-[16px] h-8 flex items-center justify-center">
+          <div v-for="day in ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']" :key="day" class="text-center font-bold text-[#1a1a1a] text-[14px] md:text-[16px] h-8 flex items-center justify-center">
             {{ day }}
           </div>
         </div>
 
         <!-- Calendar Grid -->
-        <div class="grid grid-cols-7 gap-y-2 gap-x-0 mb-6 relative">
+        <div class="grid grid-cols-7 gap-1 md:gap-y-2 md:gap-x-0 mb-6 relative">
           <div 
             v-for="(day, index) in calendarDays" 
             :key="index"
             class="h-12 relative flex items-center justify-center transition-all duration-200"
             :class="[
               isInRange(day.date) ? 'bg-[#8B2CF5]/10' : '',
-              isToday(day.date) && isSelectionFuture ? 'bg-[#8B2CF5]/10 rounded-l-[12px]' : '',
-              isSelected(day.date) && isSelectionFuture ? 'bg-[#8B2CF5]/10 rounded-r-[12px]' : '',
+              isToday(day.date) && isSelectionFuture ? 'bg-[#8B2CF5]/10 rounded-l-[8px] md:rounded-l-[12px]' : '',
+              isSelected(day.date) && isSelectionFuture ? 'bg-[#8B2CF5]/10 rounded-r-[8px] md:rounded-r-[12px]' : '',
               // Handle row boundaries for continuous feeling
-              isInRange(day.date) && (index % 7 === 0) ? 'rounded-l-[12px]' : '',
-              isInRange(day.date) && (index % 7 === 6) ? 'rounded-r-[12px]' : '',
+              isInRange(day.date) && (index % 7 === 0) ? 'rounded-l-[8px] md:rounded-l-[12px]' : '',
+              isInRange(day.date) && (index % 7 === 6) ? 'rounded-r-[8px] md:rounded-r-[12px]' : '',
             ]"
           >
             <!-- Day Cell Background/Button -->
             <div 
-              class="h-full w-full flex items-center justify-center text-[16px] transition-all duration-200"
+              class="h-full w-full flex items-center justify-center text-[14px] md:text-[16px] transition-all duration-200"
               :class="[
                 // Boundary States (Solid Purple)
                 (isSelected(day.date) && isSelectionFuture) || (isToday(day.date) && isSelectionFuture)
-                  ? 'bg-[#8B2CF5] text-white font-black shadow-lg shadow-[#8B2CF5]/40 rounded-[12px] scale-105 z-10 cursor-pointer' 
+                  ? 'bg-[#8B2CF5] text-white font-black shadow-lg shadow-[#8B2CF5]/40 rounded-[8px] md:rounded-[12px] scale-105 z-10 cursor-pointer' 
                   : '',
                 // Initial State (Outline Purple for Today)
                 isToday(day.date) && !isSelectionFuture
-                  ? 'border-[2px] border-[#8B2CF5] text-[#8B2CF5] font-black rounded-[12px] z-10 mx-1 cursor-pointer'
+                  ? 'border-[2px] border-[#8B2CF5] text-[#8B2CF5] font-black rounded-[8px] md:rounded-[12px] z-10 mx-0 md:mx-1 cursor-pointer'
                   : '',
                 // Normal States
                 !isToday(day.date) && !isSelected(day.date) && !isInRange(day.date)
                   ? (isBeforeToday(day.date)
                     ? 'text-[#d1d5db] cursor-not-allowed opacity-60 bg-transparent'
-                    : 'bg-white shadow-sm font-bold text-[#1a1a1a] hover:bg-[#8B2CF5]/10 hover:text-[#8B2CF5] cursor-pointer rounded-[12px] mx-1')
+                    : 'bg-white shadow-sm font-bold text-[#1a1a1a] hover:bg-[#8B2CF5]/10 hover:text-[#8B2CF5] cursor-pointer rounded-[8px] md:rounded-[12px] mx-0 md:mx-1')
                   : '',
                 // Range State (Text only)
                 isInRange(day.date) ? 'text-[#8B2CF5] font-bold cursor-pointer' : '',
@@ -393,7 +393,7 @@ const confirmTime = () => {
         <!-- Next Step Button -->
         <button 
           @click="confirmDate"
-          class="w-full h-14 bg-[#8B2CF5] text-white rounded-[20px] font-bold text-[18px] shadow-lg shadow-[#8B2CF5]/30 hover:opacity-90 active:scale-[0.98] transition-all"
+          class="w-full h-12 md:h-14 bg-[#8B2CF5] text-white rounded-[20px] font-bold text-[18px] shadow-lg shadow-[#8B2CF5]/30 hover:opacity-90 active:scale-[0.98] transition-all"
         >
           下一步
         </button>
@@ -505,7 +505,7 @@ const confirmTime = () => {
           <!-- Confirm Selection Button -->
           <button 
             @click="confirmTime"
-            class="w-full h-14 bg-[#8B2CF5] text-white rounded-[20px] font-bold text-[18px] shadow-lg shadow-[#8B2CF5]/30 hover:opacity-90 active:scale-[0.98] transition-all"
+            class="w-full h-12 md:h-14 bg-[#8B2CF5] text-white rounded-[20px] font-bold text-[18px] shadow-lg shadow-[#8B2CF5]/30 hover:opacity-90 active:scale-[0.98] transition-all"
           >
             确认选择
           </button>

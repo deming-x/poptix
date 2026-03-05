@@ -118,7 +118,7 @@ const handleSubmit = () => {
         <div class="text-[15px] text-[#4b5563] mb-4">
           请输入您的转售价
         </div>
-        <div class="bg-[#f4f5f8] rounded-2xl flex items-center px-4 h-[56px] w-full border border-transparent transition-colors focus-within:border-[#8B2CF5] focus-within:bg-white" :class="{'border-red-500': resalePrice && !isPriceValid}">
+        <div class="bg-[#f4f5f8] rounded-2xl flex items-center px-4 h-[48px] md:h-[56px] w-full border border-transparent transition-colors focus-within:border-[#8B2CF5] focus-within:bg-white" :class="{'border-red-500': resalePrice && !isPriceValid}">
           <span class="text-[20px] text-[#1a1a1a] mr-2 flex justify-center w-5">¥</span>
           <input 
             type="number" 
@@ -128,10 +128,10 @@ const handleSubmit = () => {
         </div>
         
         <!-- Calculation -->
-        <div class="text-[14px] text-[#8c8c8c] mt-4 mb-4 flex items-center gap-1">
-          <span>平台服务费 5%：</span>
-          <span class="text-[#f11a8a] font-medium mr-1 border-r border-gray-300 pr-2">¥{{ serviceFee }}</span>
-          <span class="ml-1">预计到手价：</span>
+        <div class="text-[12px] md:text-[14px] text-[#8c8c8c] mt-4 mb-4 flex items-center gap-1">
+          <span>平台服务费 5%:</span>
+          <span class="text-[#f11a8a] font-medium border-r border-gray-300 pr-2 mr-1">¥{{ serviceFee }}</span>
+          <span>预计到手价:</span>
           <span class="text-[#f11a8a] font-medium">¥{{ payout }}</span>
         </div>
 
@@ -140,7 +140,7 @@ const handleSubmit = () => {
         <div class="mb-4">
           <button 
             @click="currentView = 'date'"
-            class="bg-[#f4f5f8] rounded-2xl flex items-center justify-between px-4 h-[56px] w-full text-[16px] outline-none border border-transparent hover:bg-[#eef0f3] transition-colors"
+            class="bg-[#f4f5f8] rounded-2xl flex items-center justify-between px-4 h-[48px] md:h-[56px] w-full text-[16px] outline-none border border-transparent hover:bg-[#eef0f3] transition-colors"
           >
             <span class="text-[#1a1a1a] font-medium">{{ formatDate(endTime) }}</span>
             <svg class="w-5 h-5 text-[#4b5563]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -150,7 +150,7 @@ const handleSubmit = () => {
         </div>
 
         <!-- Agreement Checkbox -->
-        <div class="flex items-center gap-3 mb-4 select-none">
+        <div class="flex items-center gap-2 md:gap-3 mb-3 md:mb-4 select-none">
           <label class="cursor-pointer group flex items-center justify-center">
             <div 
               class="w-[22px] h-[22px] rounded-full border-[2px] flex items-center justify-center transition-colors"
@@ -162,15 +162,16 @@ const handleSubmit = () => {
             </div>
             <input type="checkbox" v-model="agreed" class="hidden" />
           </label>
-          <span class="text-[14px] text-[#9ca3af]">
-            我已阅读并同意 <a href="#" @click.stop.prevent="showAgreement = true" class="text-[#8B2CF5] hover:underline">《POPTIX平台转售履约协议》</a>
-          </span>
+          <div class="flex items-center gap-1 text-[12px] md:text-[14px] text-[#9ca3af]">
+            <span>我已阅读并同意</span>
+            <a href="#" @click.stop.prevent="showAgreement = true" class="text-[#8B2CF5] hover:underline">《POPTIX平台转售履约协议》</a>
+          </div>
         </div>
 
         <!-- Submit Button -->
         <button 
           @click="handleSubmit"
-          class="w-full text-white rounded-[16px] h-[56px] text-[16px] font-medium transition-all duration-300"
+          class="w-full text-white rounded-[16px] h-[48px] md:h-[56px] text-[16px] font-medium transition-all duration-300"
           :class="agreed ? 'bg-[#8B2CF5] hover:opacity-90 hover:shadow-[0_8px_20px_rgba(139,44,245,0.25)]' : 'bg-[#e5e7eb] cursor-not-allowed text-[#9ca3af]'"
         >
           同意履约协议并上架
@@ -195,7 +196,7 @@ const handleSubmit = () => {
       <Transition name="fade">
         <div 
           v-if="toastMessage" 
-          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-[#fff5eb] text-[#ff5a00] px-6 py-3 rounded-xl shadow-lg border border-[#ff8c4a]/30 whitespace-nowrap text-[15px] flex items-center gap-2 pointer-events-none"
+          class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-[#fff5eb] text-[#ff5a00] px-2 py-1 md:px-6 md:py-3 rounded-[4px] md:rounded-xl shadow-lg border-none md:border md:border-[#ff8c4a]/30 whitespace-nowrap text-[12px] md:text-[15px] flex items-center gap-2 pointer-events-none"
         >
           <span>{{ toastMessage }}</span>
         </div>
