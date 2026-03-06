@@ -94,14 +94,14 @@ const handleSubmit = () => {
     <!-- Main Modal -->
     <div 
       v-show="!showAgreement"
-      class="relative w-full md:w-[480px] rounded-t-[24px] rounded-b-none md:rounded-[24px] p-6 shadow-xl transition-all duration-300 flex flex-col slide-up-mobile md:slide-up"
+      class="relative w-full md:w-[480px] rounded-t-[24px] rounded-b-none md:rounded-[24px] p-4 md:p-6 shadow-xl transition-all duration-300 flex flex-col slide-up-mobile md:slide-up"
       :class="currentView === 'date' ? 'bg-[#F9F5FF]' : 'bg-white'"
     >
       <!-- Main Form View -->
       <div v-if="currentView === 'form'">
         <!-- Header -->
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-[22px] font-bold text-[#1a1a1a]">设置挂售价格</h2>
+        <div class="flex justify-between items-center mb-3 md:mb-4">
+          <h2 class="text-[18px] md:text-[22px] font-bold text-[#1a1a1a]">设置挂售价格</h2>
           <button @click="handleClose" class="text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full p-1.5 transition-colors">
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -110,12 +110,12 @@ const handleSubmit = () => {
         </div>
 
         <!-- Original Price -->
-        <div class="text-[17px] text-[#4b5563] mb-4 flex items-center">
+        <div class="text-[15px] md:text-[17px] text-[#4b5563] mb-3 md:mb-4 flex items-center">
           门票原价：<span class="text-[#8B2CF5] font-bold ml-1">¥{{ ticket?.price }}</span>
         </div>
 
         <!-- Resale Price Input -->
-        <div class="text-[15px] text-[#4b5563] mb-4">
+        <div class="text-[16px] md:text-[18px] text-[#1a1a1a] mb-3 md:mb-4">
           请输入您的转售价
         </div>
         <div class="bg-[#f4f5f8] rounded-2xl flex items-center px-4 h-[48px] md:h-[56px] w-full border border-transparent transition-colors focus-within:border-[#8B2CF5] focus-within:bg-white" :class="{'border-red-500': resalePrice && !isPriceValid}">
@@ -128,7 +128,7 @@ const handleSubmit = () => {
         </div>
         
         <!-- Calculation -->
-        <div class="text-[12px] md:text-[14px] text-[#8c8c8c] mt-4 mb-4 flex items-center gap-1">
+        <div class="text-[12px] md:text-[14px] text-[#8c8c8c] mt-3 md:mt-4 mb-3 md:mb-4 flex items-center gap-1">
           <span>平台服务费 5%:</span>
           <span class="text-[#f11a8a] font-medium border-r border-gray-300 pr-2 mr-1">¥{{ serviceFee }}</span>
           <span>预计到手价:</span>
@@ -136,8 +136,8 @@ const handleSubmit = () => {
         </div>
 
         <!-- End Time Input -->
-        <div class="text-[18px] text-[#1a1a1a] mb-4">设置挂售结束时间</div>
-        <div class="mb-4">
+        <div class="text-[16px] md:text-[18px] text-[#1a1a1a] mb-3 md:mb-4">设置挂售结束时间</div>
+        <div class="mb-3 md:mb-4">
           <button 
             @click="currentView = 'date'"
             class="bg-[#f4f5f8] rounded-2xl flex items-center justify-between px-4 h-[48px] md:h-[56px] w-full text-[16px] outline-none border border-transparent hover:bg-[#eef0f3] transition-colors"

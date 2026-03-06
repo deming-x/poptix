@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import UserTicketCard from '../../components/user/UserTicketCard.vue'
 import SellingTicketCard from '../../components/user/SellingTicketCard.vue'
@@ -14,12 +14,6 @@ const router = useRouter()
 const goBack = () => {
   router.push('/')
 }
-
-const tabs = [
-  { id: 'inventory', label: '票夹仓库(2)' },
-  { id: 'selling', label: '正在挂售' },
-  { id: 'history', label: '历史记录' },
-]
 
 // Mock data for tickets based on the design
 const mockTickets = ref([
@@ -55,6 +49,26 @@ const mockTickets = ref([
   },
     {
     id: 4,
+    title: '2025-26 Aespa LIVE TOUR – SYNK',
+    type: '实体票',
+    time: '周一 2026/01/26 19:00',
+    address: '香港九龙启德乘启道38号',
+    seat: '107A 14排 12号',
+    price: 1080,
+    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop'
+  },
+  {
+    id: 5,
+    title: '2025-26 Aespa LIVE TOUR – SYNK',
+    type: '实体票',
+    time: '周一 2026/01/26 19:00',
+    address: '香港九龙启德乘启道38号',
+    seat: '107A 14排 12号',
+    price: 1080,
+    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop'
+  },
+  {
+    id: 6,
     title: '2025-26 Aespa LIVE TOUR – SYNK',
     type: '实体票',
     time: '周一 2026/01/26 19:00',
@@ -175,6 +189,41 @@ const historyTickets = ref([
   }
 ])
 
+const tabs = computed(() => [
+  { id: 'inventory', label: `票夹仓库(${mockTickets.value.length})` },
+  { id: 'selling', label: '正在挂售' },
+  { id: 'history', label: '历史记录' },
+])
+
+const pageSize = 4
+
+const totalPages = computed(() => {
+  let count = 0
+  if (activeTab.value === 'inventory') count = mockTickets.value.length
+  else if (activeTab.value === 'selling') count = sellingTickets.value.length
+  else if (activeTab.value === 'history') count = historyTickets.value.length
+  return Math.max(1, Math.ceil(count / pageSize))
+})
+
+watch(activeTab, () => {
+  currentPage.value = 1
+})
+
+const paginatedInventory = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return mockTickets.value.slice(start, start + pageSize)
+})
+
+const paginatedSelling = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return sellingTickets.value.slice(start, start + pageSize)
+})
+
+const paginatedHistory = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return historyTickets.value.slice(start, start + pageSize)
+})
+
 // Modal State
 const isResaleModalOpen = ref(false)
 const isUnlistModalOpen = ref(false)
@@ -285,10 +334,10 @@ const confirmDelist = () => {
           
           <!-- Ticket Card Component -->
           <UserTicketCard 
-            v-for="(ticket, index) in mockTickets" 
+            v-for="(ticket, index) in paginatedInventory" 
             :key="ticket.id"
             :ticket="ticket"
-            :isActive="index === 0"
+            :isActive="index === 0 && currentPage === 1"
             @resale="openResaleModal(ticket)"
           />
 
@@ -297,7 +346,7 @@ const confirmDelist = () => {
         <!-- Empty States (Optional for completeness) -->
         <div v-else-if="activeTab === 'selling'" class="grid grid-cols-1 md:grid-cols-2 gap-4" key="selling">
           <SellingTicketCard 
-            v-for="ticket in sellingTickets" 
+            v-for="ticket in paginatedSelling" 
             :key="ticket.id"
             :ticket="ticket"
             @delist="handleDelist(ticket)"
@@ -305,7 +354,7 @@ const confirmDelist = () => {
         </div>
         <div v-else-if="activeTab === 'history'" class="grid grid-cols-1 md:grid-cols-2 gap-4" key="history">
           <HistoryTicketCard 
-            v-for="ticket in historyTickets" 
+            v-for="ticket in paginatedHistory" 
             :key="ticket.id"
             :ticket="ticket"
           />
@@ -334,7 +383,7 @@ const confirmDelist = () => {
 
         <!-- Dynamic Pages -->
         <button
-          v-for="page in 6"
+          v-for="page in totalPages"
           :key="page"
           @click="currentPage = page"
           class="w-10 h-10 flex items-center justify-center rounded-[16px] font-medium transition-all duration-300"
@@ -349,14 +398,14 @@ const confirmDelist = () => {
 
         <!-- Next Button -->
         <button 
-          @click="currentPage < 6 && (currentPage++)"
+          @click="currentPage < totalPages && (currentPage++)"
           class="w-8 h-8 flex items-center justify-center transition-colors rounded-full"
           :class="[
-            currentPage === 6 
+            currentPage === totalPages 
               ? 'text-gray-300 cursor-not-allowed' 
               : 'text-[#1a1a1a] hover:text-[#8B2CF5] hover:bg-[#8B2CF5]/10'
           ]"
-          :disabled="currentPage === 6"
+          :disabled="currentPage === totalPages"
         >
            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />

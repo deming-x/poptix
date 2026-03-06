@@ -346,7 +346,7 @@ const confirmTime = () => {
         </div>
 
         <!-- Calendar Grid -->
-        <div class="grid grid-cols-7 gap-1 md:gap-y-2 md:gap-x-0 mb-6 relative">
+        <div class="grid grid-cols-7 gap-y-1 gap-x-0 md:gap-y-2 mb-6 relative">
           <div 
             v-for="(day, index) in calendarDays" 
             :key="index"
