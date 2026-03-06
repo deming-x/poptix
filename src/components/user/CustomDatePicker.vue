@@ -175,13 +175,12 @@ const formattedSelection = computed(() => {
   // Handle space-separated date and time
   const [dateStr, timeStr] = props.modelValue.split(' ')
   const date = new Date(dateStr)
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  const t = timeStr ? timeStr.split(':').slice(0, 2).join(':') : ''
   
-  let result = `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`
-  if (timeStr) {
-    result += ` ${timeStr}`
-  }
-  return result
+  return `${y}/${m}/${d} ${t}`
 })
 
 // Check if a generated day object matches the selected date
@@ -370,13 +369,13 @@ const confirmTime = () => {
                   : '',
                 // Initial State (Outline Purple for Today)
                 isToday(day.date) && !isSelectionFuture
-                  ? 'border-[2px] border-[#8B2CF5] text-[#8B2CF5] font-black rounded-[8px] md:rounded-[12px] z-10 mx-0 md:mx-1 cursor-pointer'
+                  ? 'border-[2px] border-[#8B2CF5] text-[#8B2CF5] font-black rounded-[8px] md:rounded-[12px] z-10 mx-[2px] md:mx-1 cursor-pointer'
                   : '',
                 // Normal States
                 !isToday(day.date) && !isSelected(day.date) && !isInRange(day.date)
                   ? (isBeforeToday(day.date)
                     ? 'text-[#d1d5db] cursor-not-allowed opacity-60 bg-transparent'
-                    : 'bg-white shadow-sm font-bold text-[#1a1a1a] hover:bg-[#8B2CF5]/10 hover:text-[#8B2CF5] cursor-pointer rounded-[8px] md:rounded-[12px] mx-0 md:mx-1')
+                    : 'bg-white shadow-sm font-bold text-[#1a1a1a] hover:bg-[#8B2CF5]/10 hover:text-[#8B2CF5] cursor-pointer rounded-[8px] md:rounded-[12px] mx-[2px] md:mx-1')
                   : '',
                 // Range State (Text only)
                 isInRange(day.date) ? 'text-[#8B2CF5] font-bold cursor-pointer' : '',

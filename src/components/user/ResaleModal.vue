@@ -28,10 +28,13 @@ const currentView = ref<'form' | 'date'>('form')
 
 const formatDate = (val: string) => {
   if (!val) return 'Select Date'
-  const [datePart, timePart] = val.split(' ')
-  const date = new Date(datePart)
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${timePart || ''}`
+  const [dateStr, timePart] = val.split(' ')
+  const date = new Date(dateStr)
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  const t = timePart ? timePart.split(':').slice(0, 2).join(':') : ''
+  return `${y}/${m}/${d} ${t}`
 }
 
 // Reset when modal opens

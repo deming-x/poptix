@@ -389,7 +389,7 @@ const confirmDelist = () => {
           class="w-10 h-10 flex items-center justify-center rounded-[16px] font-medium transition-all duration-300"
           :class="[
             currentPage === page
-              ? 'bg-[#8B2CF5] text-white font-bold shadow-[0_8px_30px_rgba(139,44,245,0.3)] hover:scale-105'
+              ? 'bg-[#8B2CF5] text-white font-bold hover:scale-105'
               : 'bg-[#f4f5f8] text-[#4b5563] hover:bg-white hover:border hover:border-[#8B2CF5] hover:text-[#8B2CF5]'
           ]"
         >
